@@ -1,305 +1,219 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt">
 <head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NF Symptoms Tracker</title>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>TalentNF</title>
+  <link rel="icon" type="image/x-icon" href="img/icon.jpg">
   <script src="https://cdn.tailwindcss.com"></script>
-    <link rel="icon" type="image/x-icon" href="im/DNA.png">
+  <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.css"/>
+  <script src="https://cdn.jsdelivr.net/npm/swiper@11/swiper-bundle.min.js"></script>
 </head>
-<style>
-  
-</style>
-<body class="bg-gray-50 text-gray-800">
-  <div class="max-w-7xl mx-auto p-6">
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold mb-3 text-center">Neurofibromatosis Symptoms Tracker</h1>
-    </header>
+<body class="font-sans bg-gray-50 text-gray-800">
+  <nav class="bg-[#0d3b70] text-white px-4 py-2 flex items-center justify-between">
+    <div class="flex items-center space-x-3">
+      <img src="img/Logo.jpg" alt="Logo TalentNF" class="w-12 h-12 rounded-full bg-white p-1" style="width: 70px; height: 70px;">
+      <span class="hidden sm:inline text-sm md:text-base font-medium">
+        Talentos em ação, com respeito e inclusão.
+      </span>
+    </div>
+    <div class="flex items-center space-x-3">
+      <a href="login.html" 
+       class="px-3 py-1 border border-green-600 rounded hover:bg-green-600 transition text-sm md:text-base">
+        Iniciar Sessão
+      </a>
+      <div id="google_translate_element" class="text-black bg-white rounded px-1 text-xs md:text-sm"></div>
+    </div>
+  </nav>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <aside class="space-y-8" aria-label="Select your symptoms">
-        <div id="selectedCount" class="text-sm text-gray-600"></div>
-        <div id="symptomList" class="space-y-8"></div>
-        <button id="generateBtn" class="w-full sticky bottom-4 mt-2 bg-blue-600 text-white px-5 py-3 rounded-xl shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
-          Generate Individual Infographics
-        </button>
-      </aside>
+  <header class="container mx-auto text-center py-10">
+    <h1 class="text-3xl md:text-4xl font-bold text-[#0d3b70]">Bem-vindos à TalentNF</h1>
+  </header>
 
-      <main id="resultsPanel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6" aria-live="polite">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <div class="inline-flex rounded-lg overflow-hidden border" role="tablist" aria-label="View mode">
-            <button id="tabIndividual" role="tab" aria-selected="true" class="px-3 py-2 text-sm font-medium bg-gray-900 text-white">Individual</button>
-            <button id="tabOverview" role="tab" aria-selected="false" class="px-3 py-2 text-sm font-medium bg-white">Overview</button>
+  <main class="container mx-auto grid grid-cols-1 lg:grid-cols-2 gap-10 px-4 pb-20">
+    <div>
+      <div class="swiper myNF rounded-xl shadow bg-gradient-to-r from-sky-400 to-green-300">
+        <div class="swiper-wrapper">
+            <div class="swiper-slide p-6 md:p-8">
+                <h3 class="text-xl font-bold mb-3 text-[#0d3b70]">
+                    O que é a Neurofibromatose?
+                </h3>
+                <p class="text-justify">
+                    A Neurofibromatose (NF) é um grupo de três doenças genéticas raras que provocam o crescimento de tumores,
+                    geralmente benignos, no sistema nervoso central e periférico, composto por, Neurofibromatose tipo 1 (NF1), 
+                    schwannomatose relacionada ao gene NF2 (NF2-SWN, anteriormente conhecida como NF2) e outras formas de schwannomatose.
+                    Além dos tumores, pode causar alterações na pele, problemas de visão, audição, equilíbrio e dor crónica. Embora não exista cura,
+                    há tratamentos e apoio especializado que melhoram a qualidade de vida das pessoas afetadas.
+                </p>
+            </div>
+
+            <div class="swiper-slide p-6 md:p-8">
+                <h3 class="text-xl font-bold mb-3 text-[#0d3b70]">
+                    O que é a TalentNF?
+                </h3>
+                <p class="text-justify">
+                    A TalentNF é uma iniciativa da Associação Portuguesa de Neurofibromatose (APNF)
+                    que visa apoiar pessoas com esta condição a enfrentar, os obstáculos que enfrentam
+                    no acesso ao mercado de trabalho, promover a inclusão e criar pontes entre candidatos qualificados e empregadores.
+                    O nosso objetivo é assegurar visibilidade, dignidade e oportunidades reais, de forma justa e eficaz.
+                </p>
+            </div>
+
+            <div class="swiper-slide p-6 md:p-8">
+                <h3 class="text-xl font-bold mb-3 text-[#0d3b70]">
+                    O que é a APNF?
+                </h3>
+            <p class="mb-4 text-justify">
+              A Associação Portuguesa de Neurofibromatose (APNF) é uma organização sem fins lucrativos,
+              que apoia pessoas com NF e as suas famílias a lidar com os desafios desta condição, 
+              através da divulgação de informações confiáveis, da defesa de direitos dessas pessoas, 
+              do incentivo à investigação e à inclusão, contribuindo para a melhoria da qualidade de vida dos pacientes e 
+              do acesso a cuidados especializados. 
+            </p>
+            <p>Referência nacional no apoio aos afetados pela NF, a APNF reafirma a sua missão com este projeto de promoção da inclusão.</p>
+            <div class="text-center">
+              <a href="https://apnf.pt/" target="_blank" rel="noopener">
+                <img src="img/logo.svg" alt="APNF" class="w-32 mx-auto">
+              </a>
+            </div>
           </div>
-          <div class="ml-auto flex gap-2">
-            <button id="btnPrint" class="px-3 py-2 text-sm rounded border hover:bg-gray-50">Print</button>
+
+          <div class="swiper-slide p-6 md:p-8">
+            <h3 class="text-xl font-bold mb-3 text-[#0d3b70]">O que motivou a criação da TalentNF?</h3>
+            <p class="text-justify">
+            O projeto nasceu após um estudo da APNF que revelou que, em Portugal, pessoas com NF enfrentam 
+            taxas de desemprego elevadas, salários baixos e alto nível de discriminação no mercado de trabalho,
+            apesar de apresentarem níveis de instrução e qualificação acima da média. A ausência de dados e de
+            apoio estruturado levou à criação desta iniciativa, que promove oportunidades justas e combate os estigmas.
+            </p>
           </div>
+
         </div>
 
-        <div id="emptyState" class="text-gray-500">Select symptoms on the left and click “Generate Individual Infographics”.</div>
+        <div class="swiper-button-prev"></div>
+        <div class="swiper-button-next"></div>
+        <div class="swiper-pagination"></div>
+      </div>
 
-        <div id="slider" class="hidden">
-          <div class="flex items-center justify-between mb-3">
-            <button id="btnPrev" class="px-3 py-2 text-sm rounded border hover:bg-gray-50" aria-label="Previous">◀ Previous</button>
-            <div id="slidePos" class="text-sm text-gray-600"></div>
-            <button id="btnNext" class="px-3 py-2 text-sm rounded border hover:bg-gray-50" aria-label="Next">Next ▶</button>
-          </div>
-          <article id="slideCard" class="bg-indigo-50 rounded-2xl p-5 border border-indigo-100"></article>
-        </div>
+      <div class="mt-6">
+        <p class="text-lg text-justify mb-4 indent-6">
+          Estimativas indicam que, em Portugal, cerca de <strong>4.000 pessoas vivem com algum tipo de
+          Neurofibromatose (NF)</strong>. Uma parte significativa destas pessoas encontra-se em <strong>idade ativa</strong>
+          e enfrenta obstáculos para encontrar emprego, permanecer na carreira e/ou aceder a oportunidades de progressão profissional.
+        </p>
+        <p class="text-lg text-justify indent-6">
+          Num mundo globalizado, números como este podem facilmente ser vistos como “pequenos” ou até irrelevantes,
+          passando despercebidos por muitos. Mas por trás destas estatísticas estão <strong>trabalhadores,
+          empreendedores e profissionais</strong> qualificados, muitas vezes invisibilizados por preconceito
+          ou falta de oportunidades. A TalentNF nasceu para transformar esta realidade, dar visibilidade, promover
+          inclusão real e quebrar estigmas, conectando talento e dignidade a empregadores que acreditam na diversidade.
+        </p>
+        <p class=" text-lg text-justify indent-6">
+          Objetivos da TalentNF:
+        </p>
+        <ul class="list-disc text-lg pl-8 space-y-1 text-justify">
+          <li>Promover a inclusão e a diversidade no mercado de trabalho;</li>
+          <li>Conectar talentos com oportunidades;</li>
+          <li>Combater o estigma e a discriminação;</li>
+          <li>Garantir que as pessoas tenham a chance de mostrar o seu valor.</li>
+        </ul>
+      </div>
+    </div>
 
-        <div id="overviewGrid" class="hidden grid sm:grid-cols-2 gap-4"></div>
-      </main>
+    <div class="grid grid-cols-2 gap-2">
+      <div class="rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+        <img src="img/Homepic.png" alt="Pessoa 1" class="w-full h-full object-cover">
+      </div>
+      <div class="bg-white rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+        <img src="img/Homepic2.png" alt="Pessoa 2" class="w-full h-full object-contain">
+      </div>
+      <div class="bg-white rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+        <img src="img/Homepic3.png" alt="Pessoa 3" class="w-full h-full object-contain">
+      </div>
+      <div class="bg-white rounded-xl shadow-md overflow-hidden flex items-center justify-center">
+        <img src="img/Homepic4.png" alt="Pessoa 4" class="w-full h-full object-contain">
+      </div>
+    </div>
+  </main>
+
+  <footer class="bg-[#0d3b70] text-white py-3 px-6 flex items-center justify-center relative">
+        <img src="img/Logo.jpg" alt="Logo TALENTNF" class="absolute left-6 w-14 h-14 object-cover rounded-full bg-white p-1">
+
+    <div class="flex gap-4">
+      <button class="px-4 py-2 border border-green-600 rounded hover:bg-green-600 transition"
+        onclick="document.getElementById('contactoModal').classList.remove('hidden')">Contacte-nos
+      </button>
+      <button class="px-4 py-2 border border-green-600 rounded hover:bg-green-600 transition"
+        data-bs-toggle="modal" data-bs-target="#legislacaoModal">Legislação
+      </button>
+    </div>
+  </footer>
+
+  <div id="legislacaoModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+    <div class="bg-white max-w-2xl mx-4 rounded-lg shadow-lg">
+      <div class="flex justify-between items-center border-b p-4">
+        <h5 class="font-bold text-lg">Decreto-Lei n.º 290/2009</h5>
+        <button onclick="document.getElementById('legislacaoModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800">&times;</button>
+      </div>
+      <div class="p-6 space-y-4 text-gray-700 text-lg">
+        <p><strong>Objetivo:</strong> Criar o Programa de Emprego e Apoio à Qualificação das Pessoas com Deficiências e Incapacidades...</p>
+        <ul class="list-disc pl-5 text-lg">
+          <li>Apoio à qualificação (formação profissional inicial e contínua);</li>
+          <li>Apoios à integração, manutenção e reintegração no mercado de trabalho;</li>
+          <li>Incentivos à criação de postos de trabalho adaptados;</li>
+          <li>Prémios de mérito para entidades que se destaquem na integração profissional.</li>
+        </ul>
+        <p><strong>Destinatários:</strong> Pessoas com deficiências e incapacidades em idade ativa.</p>
+        <p><strong>Entidades Envolvidas:</strong> Centros de reabilitação, entidades de reabilitação, centros de recursos do IEFP, I.P., e o Fórum para a Integração Profissional.</p>
+        <p>Mais detalhes: <a href="https://diariodarepublica.pt/dr/legislacao-consolidada/decreto-lei/2009-65884851" class="text-blue-600 hover:underline" target="_blank">aqui</a>.</p>
+      </div>
     </div>
   </div>
+  
+  <div id="contactoModal" class="hidden fixed inset-0 bg-black/60 flex items-center justify-center z-50">
+  <div class="bg-white max-w-lg mx-4 rounded-lg shadow-lg">
+    <div class="flex justify-between items-center border-b p-4">
+      <h5 class="font-bold text-lg">Contacte-nos</h5>
+      <button onclick="document.getElementById('contactoModal').classList.add('hidden')" class="text-gray-500 hover:text-gray-800">&times;</button>
+    </div>
+    <div class="p-6 space-y-4 text-gray-700">
+      <h6 class="font-bold">informações de contacto</h6>
+      <div class="text-sm leading-relaxed">
+        <p><strong>Morada:</strong><br>Rua Reis Pinto, N.º 8 B,<br>1750 – 400 Ameixoeira, Lisboa.</p>
+        <p><strong>Telefone:</strong> (+351) 210 509 962</p>
+        <p><strong>Telemóvel:</strong> (+351) 960 173 375</p>
+        <p><strong>E-mail:</strong> info@apnf.pt</p>
+      </div>
+
+      <form action="https://formspree.io/f/{teu_form_id}" method="POST" class="space-y-3">
+        <input type="text" name="nome" placeholder="Seu nome" required class="w-full border rounded px-3 py-2">
+        <input type="email" name="email" placeholder="E-mail" required class="w-full border rounded px-3 py-2">
+        <input type="text" name="assunto" placeholder="Assunto" required class="w-full border rounded px-3 py-2">
+        <textarea name="mensagem" placeholder="Escreva a sua mensagem" rows="4" required class="w-full border rounded px-3 py-2"></textarea>
+        <button type="submit" class="px-4 py-2 bg-green-600 text-white rounded hover:bg-green-700 transition">Submeter</button>
+      </form>
+
+      <p class="text-xs text-gray-500">As mensagens serão encaminhadas para <strong>info@apnf.pt</strong></p>
+    </div>
+  </div>
+</div>
 
   <script>
-    const CATEGORIES = [
-      { id: 'skin', title: 'Skin Manifestations', items: [
-        { id: 'cafe-au-lait', name: 'Café-au-lait spots', prevalence: '95-100%', rateNum: 97, description: 'Light brown patches on the skin that are present from birth or appear in early childhood.', whatIsIt: 'Patches of darker skin that can vary in size and number. Six or more larger than 5mm (children) or 15mm (adults) is a diagnostic feature.', causes: ['Pigment changes related to NF1 gene effects','Usually harmless on their own'], affects: ['Generally no physical symptoms','May be an early sign to monitor'], management: ['Regular skin checks','Photographs to track changes'], sources: [{ label: 'CTF: Possible NF1 — Café-au-lait Spots (PDF)', url: 'https://www.ctf.org/wp-content/uploads/2023/11/CTF_PossibleNF1_CALS_Brochure.pdf' }] },
-        { id: 'neurofibromas', name: 'Neurofibromas', prevalence: '99%', rateNum: 99, description: 'Benign tumors that grow on nerves throughout the body. They can be cutaneous (on the skin) or plexiform (deeper).', whatIsIt: 'Soft, benign nerve-sheath tumors that may appear on/under the skin or along deeper nerves (plexiform).', causes: ['NF1 gene mutation affecting tumor suppression','Overgrowth of nerve tissue'], affects: ['May cause tingling/pain if pressing on nerves','Can affect appearance and self-esteem','Rarely, some can transform to malignant tumors'], management: ['Regular monitoring by healthcare team','MRI scans if internal involvement is suspected','Surgical removal if causing problems','Pain management as needed'] },
-        { id: 'freckling', name: 'Freckling in armpits/groin', prevalence: '90%', rateNum: 90, description: 'Small freckles that appear in skin-fold areas such as armpits, groin or under the breast.', whatIsIt: 'Clusters of freckles in body folds (axillary/inguinal freckling).', causes: ['Pigment changes related to NF1'], affects: ['Cosmetic impact only; generally harmless'], management: ['Observation; note distribution and timing'] },
-      ]},
-      { id: 'neuro', title: 'Neurological & Cognitive', items: [
-        { id: 'learning', name: 'Learning disabilities', prevalence: '50-75%', rateNum: 60, description: 'Difficulties with skills like reading, writing, math, attention or processing speed.', whatIsIt: 'Neurodevelopmental differences affecting academic or executive skills.', causes: ['NF1-related brain development differences'], affects: ['School performance','Organization and attention'], management: ['Educational supports and accommodations','Neuropsychological assessment'] },
-        { id: 'adhd', name: 'ADHD', prevalence: '30-50%', rateNum: 40, description: 'Attention Deficit/Hyperactivity with inattention, hyperactivity or impulsiveness.', whatIsIt: 'A behavioral pattern that impacts attention and activity levels.', causes: ['Neurobiological differences associated with NF1'], affects: ['Focus, task completion, impulsivity'], management: ['Behavioral strategies','School/clinical support'] },
-        { id: 'seizures', name: 'Seizures', prevalence: '4-7%', rateNum: 6, description: 'Abnormal brain electrical activity causing brief staring spells to convulsions.', whatIsIt: 'Episodes of altered awareness or movements.', causes: ['Various, sometimes related to NF1 lesions'], affects: ['Safety and daily activities'], management: ['Neurology follow-up','Medication if indicated'] },
-      ]},
-      { id: 'eye', title: 'Eye & Vision', items: [
-        { id: 'optic-gliomas', name: 'Optic gliomas', prevalence: '15-20%', rateNum: 18, description: 'Benign tumors on the optic nerve/pathway that can affect vision.', whatIsIt: 'Slow-growing tumors along the optic pathway.', causes: ['Tumor growth related to NF1'], affects: ['Vision, eye movements'], management: ['Regular ophthalmology exams','MRI monitoring; treatment only if progressive'] },
-        { id: 'lisch', name: 'Lisch nodules', prevalence: '90-95%', rateNum: 92, description: 'Small, harmless brown spots on the iris, visible with special equipment.', whatIsIt: 'Melanocytic hamartomas of the iris.', causes: ['Pigment cell changes'], affects: ['No effect on vision'], management: ['Observation during routine eye exams'] },
-      ]},
-      { id: 'skeletal', title: 'Skeletal & Growth', items: [
-        { id: 'short-stature', name: 'Short stature', prevalence: '30-50%', rateNum: 40, description: 'Below-average height for age, often apparent in childhood.', whatIsIt: 'Growth pattern differences.', causes: ['Complex growth regulation in NF1'], affects: ['Growth charts and expectations'], management: ['Pediatric monitoring; endocrinology if needed'] },
-        { id: 'macrocephaly', name: 'Large head circumference', prevalence: '30-50%', rateNum: 40, description: 'Head size larger than average (macrocephaly).', whatIsIt: 'Benign macrocephaly common in NF1.', causes: ['Brain/cranial growth differences'], affects: ['Usually asymptomatic'], management: ['Measure and track; imaging only if there are concerns'] },
-        { id: 'scoliosis', name: 'Scoliosis', prevalence: '10-30%', rateNum: 20, description: 'Abnormal curvature of the spine.', whatIsIt: 'Spinal curve that may progress.', causes: ['Skeletal development differences'], affects: ['Posture, back pain if severe'], management: ['Orthopedic evaluation; bracing or surgery if needed'] },
-      ]},
-      { id: 'other', title: 'Other Medical Issues', items: [
-        { id: 'hypertension', name: 'High blood pressure', prevalence: '10-15%', rateNum: 12, description: 'Elevated blood pressure that may be related to kidney or vascular abnormalities.', whatIsIt: 'Systemic hypertension.', causes: ['Renal artery stenosis, pheochromocytoma (rare)','Essential causes'], affects: ['Cardiovascular risk if untreated'], management: ['Regular blood pressure checks','Treat underlying causes'] },
-      ]}
-    ];
+    const swiper = new Swiper('.myNF', {
+      loop: true,
+      speed: 600,
+      grabCursor: true,
+      navigation: { nextEl: '.swiper-button-next', prevEl: '.swiper-button-prev' },
+      pagination: { el: '.swiper-pagination', clickable: true },
+      a11y: { enabled: true }
+    });
 
-    const DEFAULT_SOURCES = [
-      { label: "Sources:", url: 'https://www.ctf.org/nf1/#mainfestations' }
-    ];
-
-    const selected = new Set();
-    let mode = 'individual';
-    let cards = [];
-    let activeIndex = 0;
-
-    const elList = document.getElementById('symptomList');
-    const elCount = document.getElementById('selectedCount');
-    const elGenerate = document.getElementById('generateBtn');
-
-    const elEmpty = document.getElementById('emptyState');
-    const elSlider = document.getElementById('slider');
-    const elSlideCard = document.getElementById('slideCard');
-    const elOverview = document.getElementById('overviewGrid');
-    const elPos = document.getElementById('slidePos');
-
-    const tabIndividual = document.getElementById('tabIndividual');
-    const tabOverview = document.getElementById('tabOverview');
-
-    function renderSymptoms() {
-      elList.innerHTML = '';
-      CATEGORIES.forEach(cat => {
-        const section = document.createElement('section');
-        section.className = 'bg-white rounded-2xl shadow-sm border border-gray-200';
-        section.innerHTML = `<div class="p-5 border-b"><h2 class="text-lg font-semibold">${cat.title}</h2></div>`;
-        const ul = document.createElement('ul');
-        ul.className = 'divide-y';
-
-        cat.items.forEach(item => {
-          const isOn = selected.has(item.id);
-          const li = document.createElement('li');
-          li.className = `p-5 flex gap-4 items-start justify-between ${isOn ? 'bg-blue-50' : 'bg-white'}`;
-          li.innerHTML = `
-            <div class="flex-1 pr-4">
-              <div class="flex items-center gap-2">
-                <h3 class="font-medium">${item.name}</h3>
-                <span class="text-xs bg-gray-100 rounded px-2 py-0.5 text-gray-700">${item.prevalence}</span>
-              </div>
-              <p class="text-sm text-gray-600 mt-1">${item.description}</p>
-            </div>
-            <label class="flex items-center gap-3 cursor-pointer select-none">
-              <input type="checkbox" class="sr-only" aria-label="Toggle symptom: ${item.name}" ${isOn ? 'checked' : ''} />
-              <span class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isOn ? 'bg-blue-600' : 'bg-gray-300'}">
-                <span class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${isOn ? 'translate-x-5' : 'translate-x-1'}"></span>
-              </span>
-            </label>`;
-
-          const checkbox = li.querySelector('input');
-          checkbox.addEventListener('change', (e) => {
-            const on = e.target.checked;
-            if (on) selected.add(item.id); else selected.delete(item.id);
-            li.className = `p-5 flex gap-4 items-start justify-between ${on ? 'bg-blue-50' : 'bg-white'}`;
-            const track = li.querySelector('span.relative');
-            const knob = li.querySelector('span.inline-block');
-            track.className = `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${on ? 'bg-blue-600' : 'bg-gray-300'}`;
-            knob.className = `inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${on ? 'translate-x-5' : 'translate-x-1'}`;
-            updateSelectedCount();
-          });
-
-          ul.appendChild(li);
-        });
-
-        section.appendChild(ul);
-        elList.appendChild(section);
+    document.querySelectorAll('[data-bs-toggle="modal"]').forEach(btn => {
+      btn.addEventListener('click', () => {
+        const target = btn.getAttribute('data-bs-target');
+        document.querySelector(target).classList.remove('hidden');
       });
-
-      updateSelectedCount();
-    }
-
-    function updateSelectedCount() {
-      const n = selected.size;
-      elCount.textContent = n ? `${n} symptom${n>1?'s':''} selected` : 'No symptoms selected';
-    }
-
-    function computeCards() {
-      const list = [];
-      CATEGORIES.forEach(cat => cat.items.forEach(it => { if (selected.has(it.id)) list.push({ ...it, category: cat.title }); }));
-      return list;
-    }
-
-    function setMode(newMode) {
-      mode = newMode;
-      tabIndividual.setAttribute('aria-selected', String(mode==='individual'));
-      tabOverview.setAttribute('aria-selected', String(mode==='overview'));
-      tabIndividual.className = `px-3 py-2 text-sm font-medium ${mode==='individual'?'bg-gray-900 text-white':'bg-white'}`;
-      tabOverview.className = `px-3 py-2 text-sm font-medium ${mode==='overview'?'bg-gray-900 text-white':'bg-white'}`;
-      renderResults();
-    }
-
-    function renderResults() {
-      if (!cards.length) {
-        elEmpty.classList.remove('hidden');
-        elSlider.classList.add('hidden');
-        elOverview.classList.add('hidden');
-        return;
-      }
-      elEmpty.classList.add('hidden');
-
-      if (mode === 'individual') {
-        elSlider.classList.remove('hidden');
-        elOverview.classList.add('hidden');
-        renderSlide();
-      } else {
-        elSlider.classList.add('hidden');
-        elOverview.classList.remove('hidden');
-        renderOverview();
-      }
-    }
-
-    function renderSlide() {
-      const s = cards[activeIndex];
-      const src = s.sources || DEFAULT_SOURCES;
-      elPos.textContent = `${activeIndex + 1} of ${cards.length}`;
-      const today = new Date().toLocaleDateString();
-      elSlideCard.innerHTML = `
-        <header class="mb-4">
-          <div class="text-indigo-700 text-sm font-medium inline-block bg-white/70 rounded px-2 py-0.5 border border-indigo-200">${s.category}</div>
-          <h3 class="mt-2 text-2xl font-bold text-indigo-900">${s.name}</h3>
-          <div class="mt-1 text-sm text-indigo-900/80">Prevalence in NF1: <strong>${s.prevalence}</strong></div>
-        </header>
-        <section class="grid md:grid-cols-2 gap-4">
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">What is it?</h4>
-            <p class="text-sm text-gray-700">${s.whatIsIt}</p>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">What causes it?</h4>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">${s.causes.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">How it affects me</h4>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">${s.affects.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">Management & Support</h4>
-            <ul class="text-sm text-gray-700 grid grid-cols-1 sm:grid-cols-2 gap-2">${s.management.map(m=>`<li class='px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-900'>${m}</li>`).join('')}</ul>
-          </div>
-        </section>
-        <section class="mt-4 bg-white rounded-xl p-4 border">
-          <h4 class="font-semibold mb-2">How common is this symptom?</h4>
-          <div class="flex items-center gap-3">
-            <div class="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
-              <div class="h-3 bg-blue-600 rounded-full" style="width:${Math.max(0, Math.min(100, s.rateNum))}%"></div>
-            </div>
-            <div class="w-12 text-right font-semibold text-blue-700">${s.rateNum}%</div>
-          </div>
-        </section>
-        <section class="mt-4 bg-blue-50/60 rounded-xl p-4 border border-blue-200">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-sm font-semibold text-blue-900">Sources:</span>
-          </div>
-          <div class="grid sm:grid-cols-2 gap-2">
-            ${src.map(x=>`<a class='group flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-900 hover:bg-blue-50' href='${x.url}' target='_blank' rel='noopener noreferrer'>
-              <span class='font-medium truncate'>${x.label}</span>
-              <svg aria-hidden='true' viewBox='0 0 20 20' class='w-4 h-4 text-blue-600 group-hover:text-blue-700'><path fill='currentColor' d='M11 3h6v6h-2V6.41l-7.29 7.3-1.42-1.42L13.59 5H11V3z'/><path fill='currentColor' d='M5 5h4v2H7v8h8v-2h2v4H5z'/></svg>
-            </a>`).join('')}
-          </div>
-          <p class="mt-2 text-xs text-blue-900/80">This link opens in a new tab.</p>
-        </section>
-        `;
-      restyleSources();
-    }
-
-    function renderOverview() {
-      elOverview.innerHTML = cards.map(s => `
-        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
-          <div class="text-xs text-indigo-700 font-medium inline-block bg-white/70 rounded px-2 py-0.5 border border-indigo-200 mb-1">${s.category}</div>
-          <h4 class="font-semibold text-indigo-900">${s.name}</h4>
-          <p class="text-xs text-indigo-900/90">Prevalence: ${s.prevalence}</p>
-          <p class="text-sm text-gray-700 mt-2">${s.whatIsIt}</p>
-        </div>`).join('');
-    }
-
-    function restyleSources(){
-      const headings = elSlideCard.querySelectorAll('h4');
-      let section = null;
-      headings.forEach(h=>{ if(h.textContent && h.textContent.trim().toLowerCase()==='sources'){ section = h.closest('section'); }});
-      if(!section) return;
-      const links = Array.from(section.querySelectorAll('a'));
-      if(!links.length) return;
-      section.className = 'mt-4 bg-blue-50/60 rounded-xl p-4 border border-blue-200';
-      section.innerHTML = `
-        <div class="flex items-center gap-2 mb-2">
-          <span class="text-sm font-semibold text-blue-900">Sources:</span>
-        </div>
-        <div class="grid sm:grid-cols-2 gap-2">
-          ${links.map(a=>`<a class="group flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-900 hover:bg-blue-50" href="${a.href}" target="_blank" rel="noopener noreferrer">
-            <span class="font-medium truncate">${a.textContent}</span>
-            <svg aria-hidden="true" viewBox="0 0 20 20" class="w-4 h-4 text-blue-600 group-hover:text-blue-700"><path fill="currentColor" d="M11 3h6v6h-2V6.41l-7.29 7.3-1.42-1.42L13.59 5H11V3z"/><path fill="currentColor" d="M5 5h4v2H7v8h8v-2h2v4H5z"/></svg>
-          </a>`).join('')}
-        </div>
-        <p class="mt-2 text-xs text-blue-900/80">This link opens in a new tab.</p>
-      `;
-    }
-
-
-    document.getElementById('btnPrev').addEventListener('click', () => {
-      activeIndex = (activeIndex - 1 + cards.length) % cards.length;
-      renderSlide();
     });
-    document.getElementById('btnNext').addEventListener('click', () => {
-      activeIndex = (activeIndex + 1) % cards.length;
-      renderSlide();
-    });
-
-    elGenerate.addEventListener('click', () => {
-      cards = computeCards();
-      activeIndex = 0;
-      setMode('individual');
-      document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    tabIndividual.addEventListener('click', () => setMode('individual'));
-    tabOverview.addEventListener('click', () => setMode('overview'));
-
-    document.getElementById('btnPrint').addEventListener('click', () => window.print());
-
-    renderSymptoms();
-    setMode('individual');
   </script>
 </body>
 </html>
