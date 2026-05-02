@@ -1,289 +1,1934 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="pt" dir="ltr">
 <head>
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>NF Symptoms Tracker</title>
-  <script src="https://cdn.tailwindcss.com"></script>
+  <meta name="description" content="Ferramenta educacional sobre sintomas e tratamentos da Neurofibromatose tipo 1 (NF1). Não substitui aconselhamento médico.">
+  <meta name="theme-color" content="#f8f7f4">
+  <title>NF1 Tracker — Neurofibromatose Tipo 1</title>
+
+  <!-- Preload critical font -->
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=DM+Sans:ital,opsz,wght@0,9..40,300;0,9..40,400;0,9..40,500;1,9..40,300&family=DM+Serif+Display:ital@0;1&display=swap" rel="stylesheet">
+
+  <style>
+    /* ── RESET & TOKENS ───────────────────────────────────── */
+    *, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+    :root {
+      --bg:         #f8f7f4;
+      --surface:    #ffffff;
+      --border:     #e8e4dc;
+      --border2:    #d4cfc5;
+      --text:       #1a1814;
+      --muted:      #6b6760;
+      --faint:      #a09d98;
+      --accent:     #2d5fa6;
+      --accent-bg:  #eef2fb;
+      --accent-dk:  #1e4278;
+      --emerald:    #0e6a4e;
+      --emerald-bg: #eaf5f0;
+      --amber:      #92520a;
+      --amber-bg:   #fdf3e3;
+      --red:        #9b2c2c;
+      --red-bg:     #fdf0f0;
+      --indigo:     #3730a3;
+      --indigo-bg:  #eef2ff;
+      --radius-sm:  6px;
+      --radius:     12px;
+      --radius-lg:  18px;
+      --shadow:     0 1px 3px rgba(0,0,0,.07), 0 4px 12px rgba(0,0,0,.04);
+      --font-body:  'DM Sans', system-ui, sans-serif;
+      --font-serif: 'DM Serif Display', Georgia, serif;
+      --transition: 160ms ease;
+    }
+
+    /* ── DARK MODE ────────────────────────────────────────── */
+    @media (prefers-color-scheme: dark) {
+      :root {
+        --bg:         #141210;
+        --surface:    #1e1c19;
+        --border:     #2e2b26;
+        --border2:    #3d3a34;
+        --text:       #f0ede8;
+        --muted:      #9a9590;
+        --faint:      #6b6760;
+        --accent:     #6b9ee8;
+        --accent-bg:  #1a2540;
+        --accent-dk:  #93bbf5;
+        --emerald:    #4db896;
+        --emerald-bg: #0d2a22;
+        --amber:      #e8a94a;
+        --amber-bg:   #2a1e08;
+        --red:        #f08080;
+        --red-bg:     #2a0f0f;
+        --indigo:     #a5b4fc;
+        --indigo-bg:  #1a1a3a;
+        --shadow:     0 1px 3px rgba(0,0,0,.3), 0 4px 12px rgba(0,0,0,.2);
+      }
+    }
+
+    /* ── BASE ─────────────────────────────────────────────── */
+    html { scroll-behavior: smooth; }
+    body {
+      font-family: var(--font-body);
+      background: var(--bg);
+      color: var(--text);
+      font-size: 16px;
+      line-height: 1.65;
+      min-height: 100dvh;
+    }
+
+    /* ── SKIP LINK (WCAG) ────────────────────────────────── */
+    .skip-link {
+      position: absolute; top: -9999px; left: 1rem;
+      background: var(--accent); color: #fff;
+      padding: .5rem 1rem; border-radius: var(--radius-sm);
+      font-size: .9rem; font-weight: 500; z-index: 9999;
+      text-decoration: none;
+    }
+    .skip-link:focus { top: 1rem; }
+
+    /* ── DISCLAIMER BANNER ───────────────────────────────── */
+    .disclaimer {
+      background: var(--amber-bg);
+      border-bottom: 1px solid var(--border);
+      padding: .6rem 1.25rem;
+      display: flex; align-items: center; gap: .6rem;
+      font-size: .8rem; color: var(--amber);
+      line-height: 1.4;
+    }
+    .disclaimer svg { flex-shrink: 0; width: 16px; height: 16px; }
+
+    /* ── HEADER ───────────────────────────────────────────── */
+    .site-header {
+      background: var(--surface);
+      border-bottom: 1px solid var(--border);
+      padding: 1rem 1.5rem;
+      display: flex; align-items: center; gap: 1rem;
+      position: sticky; top: 0; z-index: 100;
+    }
+    .site-header h1 {
+      font-family: var(--font-serif);
+      font-size: 1.35rem;
+      font-weight: 400;
+      color: var(--text);
+      flex: 1;
+    }
+    .site-header h1 em {
+      font-style: italic;
+      color: var(--accent);
+    }
+
+    /* ── LANG SWITCHER ───────────────────────────────────── */
+    .lang-switcher {
+      display: flex; gap: 2px;
+      background: var(--bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: 2px;
+    }
+    .lang-btn {
+      padding: .25rem .55rem;
+      font-size: .75rem; font-weight: 500;
+      border: none; background: transparent;
+      color: var(--muted); border-radius: 4px;
+      cursor: pointer; transition: var(--transition);
+      font-family: var(--font-body);
+    }
+    .lang-btn.active,
+    .lang-btn:hover { background: var(--surface); color: var(--text); }
+    .lang-btn.active { box-shadow: 0 1px 3px rgba(0,0,0,.1); }
+
+    /* ── READING MODE TOGGLE ─────────────────────────────── */
+    .mode-toggle {
+      display: flex; align-items: center; gap: .5rem;
+      font-size: .8rem; color: var(--muted);
+    }
+    .mode-switch {
+      position: relative; display: inline-block;
+      width: 42px; height: 24px;
+    }
+    .mode-switch input { opacity: 0; width: 0; height: 0; }
+    .mode-slider {
+      position: absolute; inset: 0;
+      background: var(--border2); border-radius: 12px;
+      cursor: pointer; transition: var(--transition);
+    }
+    .mode-slider::before {
+      content: '';
+      position: absolute; width: 18px; height: 18px;
+      left: 3px; top: 3px;
+      background: var(--surface); border-radius: 50%;
+      transition: var(--transition);
+    }
+    .mode-switch input:checked + .mode-slider { background: var(--accent); }
+    .mode-switch input:checked + .mode-slider::before { transform: translateX(18px); }
+    .mode-switch input:focus-visible + .mode-slider { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── LAYOUT ───────────────────────────────────────────── */
+    .layout {
+      max-width: 1280px; margin: 0 auto;
+      padding: 1.5rem 1.25rem;
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: 1.5rem;
+    }
+    @media (min-width: 1024px) {
+      .layout { grid-template-columns: 420px 1fr; align-items: start; }
+    }
+
+    /* ── SIDEBAR ──────────────────────────────────────────── */
+    .sidebar { display: flex; flex-direction: column; gap: 1rem; }
+    .selected-count {
+      font-size: .85rem; color: var(--muted);
+      padding: .1rem 0;
+    }
+    .selected-count strong { color: var(--text); }
+
+    /* ── CATEGORY SECTION ─────────────────────────────────── */
+    .cat-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      overflow: hidden;
+      box-shadow: var(--shadow);
+    }
+    .cat-header {
+      padding: .85rem 1.1rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .6rem;
+    }
+    .cat-icon {
+      width: 28px; height: 28px;
+      border-radius: var(--radius-sm);
+      display: flex; align-items: center; justify-content: center;
+      flex-shrink: 0;
+    }
+    .cat-icon svg { width: 15px; height: 15px; }
+    .cat-header h2 { font-size: .95rem; font-weight: 500; }
+
+    /* ── SYMPTOM ROW ──────────────────────────────────────── */
+    .symptom-row {
+      padding: .9rem 1.1rem;
+      display: flex; gap: .85rem; align-items: flex-start;
+      border-bottom: 1px solid var(--border);
+      transition: background var(--transition);
+    }
+    .symptom-row:last-child { border-bottom: none; }
+    .symptom-row.active { background: var(--accent-bg); }
+    .symptom-info { flex: 1; min-width: 0; }
+    .symptom-name-row {
+      display: flex; align-items: center; gap: .45rem;
+      flex-wrap: wrap; margin-bottom: .2rem;
+    }
+    .symptom-name { font-size: .9rem; font-weight: 500; }
+    .prevalence-badge {
+      font-size: .7rem; font-weight: 500;
+      background: var(--bg); color: var(--muted);
+      border: 1px solid var(--border);
+      padding: .1rem .45rem; border-radius: 99px;
+    }
+    .symptom-desc {
+      font-size: .8rem; color: var(--muted); line-height: 1.5;
+    }
+
+    /* ── TOGGLE ───────────────────────────────────────────── */
+    .toggle-wrap { flex-shrink: 0; padding-top: 2px; }
+    .toggle-wrap input[type="checkbox"] { display: none; }
+    .toggle-track {
+      display: flex; align-items: center;
+      width: 44px; height: 26px;
+      background: var(--border2);
+      border-radius: 13px;
+      cursor: pointer;
+      transition: background var(--transition);
+      position: relative;
+    }
+    .toggle-track::after {
+      content: '';
+      position: absolute; left: 3px;
+      width: 20px; height: 20px;
+      background: #fff;
+      border-radius: 50%;
+      transition: transform var(--transition);
+      box-shadow: 0 1px 3px rgba(0,0,0,.2);
+    }
+    .toggle-wrap input:checked + .toggle-track { background: var(--accent); }
+    .toggle-wrap input:checked + .toggle-track::after { transform: translateX(18px); }
+    .toggle-wrap input:focus-visible + .toggle-track {
+      outline: 2px solid var(--accent);
+      outline-offset: 2px;
+    }
+
+    /* ── GENERATE BUTTON ──────────────────────────────────── */
+    .btn-generate {
+      width: 100%;
+      padding: .85rem 1.25rem;
+      background: var(--accent);
+      color: #fff;
+      border: none; border-radius: var(--radius);
+      font-family: var(--font-body);
+      font-size: .95rem; font-weight: 500;
+      cursor: pointer;
+      transition: background var(--transition), transform var(--transition);
+      box-shadow: 0 2px 8px rgba(45,95,166,.3);
+    }
+    .btn-generate:hover { background: var(--accent-dk); }
+    .btn-generate:active { transform: scale(.98); }
+    .btn-generate:focus-visible {
+      outline: 2px solid var(--accent);
+      outline-offset: 3px;
+    }
+    .btn-generate:disabled {
+      background: var(--border2); color: var(--faint);
+      box-shadow: none; cursor: not-allowed;
+    }
+
+    /* ── MAIN PANEL ───────────────────────────────────────── */
+    .main-panel {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-lg);
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+    .panel-toolbar {
+      padding: .85rem 1.25rem;
+      border-bottom: 1px solid var(--border);
+      display: flex; align-items: center; gap: .6rem;
+      flex-wrap: wrap;
+    }
+
+    /* ── TABS ─────────────────────────────────────────────── */
+    .tab-group {
+      display: flex;
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      overflow: hidden;
+    }
+    .tab-btn {
+      padding: .4rem .8rem;
+      font-size: .82rem; font-weight: 500;
+      background: transparent; border: none;
+      color: var(--muted); cursor: pointer;
+      font-family: var(--font-body);
+      transition: var(--transition);
+    }
+    .tab-btn[aria-selected="true"] {
+      background: var(--text); color: var(--surface);
+    }
+    .tab-btn:hover:not([aria-selected="true"]) { background: var(--bg); }
+    .tab-btn:focus-visible { outline: 2px solid var(--accent); outline-offset: -2px; }
+
+    /* ── TOOLBAR BUTTONS ──────────────────────────────────── */
+    .btn-small {
+      padding: .4rem .75rem;
+      font-size: .8rem; font-weight: 400;
+      border: 1px solid var(--border);
+      background: transparent; color: var(--text);
+      border-radius: var(--radius-sm);
+      cursor: pointer; font-family: var(--font-body);
+      transition: var(--transition);
+    }
+    .btn-small:hover { background: var(--bg); }
+    .btn-small:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+
+    /* ── PANEL CONTENT ────────────────────────────────────── */
+    .panel-body { padding: 1.25rem; }
+
+    /* ── EMPTY STATE ──────────────────────────────────────── */
+    .empty-state {
+      text-align: center; padding: 3rem 1.5rem;
+      color: var(--muted);
+    }
+    .empty-state svg { width: 48px; height: 48px; margin: 0 auto 1rem; opacity: .4; }
+    .empty-state p { font-size: .9rem; line-height: 1.6; }
+
+    /* ── SLIDER ───────────────────────────────────────────── */
+    .slider-nav {
+      display: flex; align-items: center; justify-content: space-between;
+      margin-bottom: 1rem;
+    }
+    .slide-pos { font-size: .82rem; color: var(--muted); }
+
+    /* ── SLIDE CARD ───────────────────────────────────────── */
+    .slide-card {
+      background: var(--indigo-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius);
+      padding: 1.25rem;
+    }
+    .slide-category {
+      display: inline-block;
+      font-size: .75rem; font-weight: 500;
+      color: var(--indigo);
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: 99px;
+      padding: .2rem .6rem;
+      margin-bottom: .6rem;
+    }
+    .slide-title {
+      font-family: var(--font-serif);
+      font-size: 1.6rem; font-weight: 400;
+      color: var(--text); line-height: 1.2;
+      margin-bottom: .3rem;
+    }
+    .slide-prevalence {
+      font-size: .82rem; color: var(--muted);
+      margin-bottom: 1rem;
+    }
+    .slide-prevalence strong { color: var(--accent); }
+
+    /* ── SLIDE GRID ───────────────────────────────────────── */
+    .slide-grid {
+      display: grid;
+      grid-template-columns: 1fr;
+      gap: .75rem;
+      margin-bottom: .75rem;
+    }
+    @media (min-width: 640px) {
+      .slide-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .info-card {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+    }
+    .info-card h4 {
+      font-size: .78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--faint); margin-bottom: .5rem;
+    }
+    .info-card p, .info-card li {
+      font-size: .85rem; color: var(--text); line-height: 1.55;
+    }
+    .info-card ul { padding-left: 1.1rem; }
+    .info-card li { margin-bottom: .25rem; }
+
+    /* ── MANAGEMENT PILLS ─────────────────────────────────── */
+    .mgmt-list {
+      display: flex; flex-wrap: wrap; gap: .4rem;
+      list-style: none; padding: 0;
+    }
+    .mgmt-list li {
+      font-size: .78rem;
+      background: var(--emerald-bg);
+      color: var(--emerald);
+      border: 1px solid color-mix(in srgb, var(--emerald) 20%, transparent);
+      border-radius: var(--radius-sm);
+      padding: .3rem .65rem;
+    }
+
+    /* ── PREVALENCE BAR ───────────────────────────────────── */
+    .prev-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+      margin-bottom: .75rem;
+    }
+    .prev-section h4 {
+      font-size: .78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--faint); margin-bottom: .6rem;
+    }
+    .prev-bar-wrap {
+      display: flex; align-items: center; gap: .75rem;
+    }
+    .prev-bar-track {
+      flex: 1; height: 10px;
+      background: var(--accent-bg);
+      border-radius: 5px; overflow: hidden;
+    }
+    .prev-bar-fill {
+      height: 100%;
+      background: var(--accent);
+      border-radius: 5px;
+      transition: width .4s ease;
+    }
+    .prev-pct {
+      font-size: .85rem; font-weight: 500;
+      color: var(--accent); min-width: 2.5rem; text-align: right;
+    }
+
+    /* ── TIMELINE ─────────────────────────────────────────── */
+    .timeline-section {
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+      margin-bottom: .75rem;
+    }
+    .timeline-section h4 {
+      font-size: .78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--faint); margin-bottom: .75rem;
+    }
+    .timeline-track {
+      position: relative;
+      display: flex; gap: 0;
+    }
+    .timeline-phase {
+      flex: 1; text-align: center; padding: 0 .25rem;
+      position: relative;
+    }
+    .timeline-phase::before {
+      content: '';
+      display: block; height: 6px;
+      background: var(--border); border-radius: 3px;
+      margin-bottom: .4rem;
+    }
+    .timeline-phase.active::before { background: var(--accent); }
+    .timeline-phase.onset::before { background: var(--amber); }
+    .timeline-label {
+      font-size: .7rem; color: var(--faint); display: block;
+    }
+    .timeline-phase.active .timeline-label { color: var(--accent); font-weight: 500; }
+    .timeline-phase.onset .timeline-label { color: var(--amber); font-weight: 500; }
+
+    /* ── SOURCES SECTION ──────────────────────────────────── */
+    .sources-section {
+      background: var(--accent-bg);
+      border: 1px solid color-mix(in srgb, var(--accent) 25%, transparent);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+    }
+    .sources-section h4 {
+      font-size: .78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--accent); margin-bottom: .6rem;
+    }
+    .sources-grid {
+      display: grid; grid-template-columns: 1fr;
+      gap: .4rem;
+    }
+    @media (min-width: 480px) {
+      .sources-grid { grid-template-columns: 1fr 1fr; }
+    }
+    .source-link {
+      display: flex; align-items: center; justify-content: space-between;
+      gap: .5rem;
+      background: var(--surface);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .5rem .75rem;
+      text-decoration: none;
+      color: var(--accent);
+      font-size: .78rem; font-weight: 500;
+      transition: var(--transition);
+    }
+    .source-link:hover { background: var(--bg); }
+    .source-link:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+    .source-link svg { width: 12px; height: 12px; flex-shrink: 0; }
+    .source-link span { white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+    .sources-note {
+      font-size: .72rem; color: var(--muted);
+      margin-top: .5rem;
+    }
+
+    /* ── NEXT STEPS ───────────────────────────────────────── */
+    .next-steps-section {
+      margin-top: .75rem;
+      background: var(--emerald-bg);
+      border: 1px solid color-mix(in srgb, var(--emerald) 20%, transparent);
+      border-radius: var(--radius-sm);
+      padding: .85rem;
+    }
+    .next-steps-section h4 {
+      font-size: .78rem; font-weight: 500;
+      text-transform: uppercase; letter-spacing: .04em;
+      color: var(--emerald); margin-bottom: .6rem;
+    }
+    .next-steps-list {
+      list-style: none; padding: 0;
+      display: flex; flex-direction: column; gap: .35rem;
+    }
+    .next-steps-list li {
+      display: flex; align-items: flex-start; gap: .5rem;
+      font-size: .82rem; color: var(--text); line-height: 1.4;
+    }
+    .next-steps-list li::before {
+      content: '';
+      width: 6px; height: 6px; border-radius: 50%;
+      background: var(--emerald);
+      flex-shrink: 0; margin-top: .45rem;
+    }
+
+    /* ── OVERVIEW GRID ────────────────────────────────────── */
+    .overview-grid {
+      display: grid;
+      grid-template-columns: repeat(auto-fill, minmax(220px, 1fr));
+      gap: .75rem;
+    }
+    .overview-card {
+      background: var(--indigo-bg);
+      border: 1px solid var(--border);
+      border-radius: var(--radius-sm);
+      padding: .9rem;
+    }
+    .overview-cat {
+      font-size: .7rem; font-weight: 500; color: var(--indigo);
+      text-transform: uppercase; letter-spacing: .04em;
+      margin-bottom: .3rem;
+    }
+    .overview-name {
+      font-size: .9rem; font-weight: 500;
+      color: var(--text); margin-bottom: .2rem;
+    }
+    .overview-prev {
+      font-size: .75rem; color: var(--muted); margin-bottom: .4rem;
+    }
+    .overview-desc {
+      font-size: .78rem; color: var(--muted); line-height: 1.5;
+    }
+
+    /* ── GLOSSARY TOOLTIP ─────────────────────────────────── */
+    .glossary-term {
+      border-bottom: 1px dashed var(--accent);
+      cursor: help; position: relative;
+      color: var(--accent-dk);
+    }
+    [data-tooltip] { position: relative; }
+    [data-tooltip]:hover::after,
+    [data-tooltip]:focus::after {
+      content: attr(data-tooltip);
+      position: absolute; bottom: calc(100% + 6px); left: 50%;
+      transform: translateX(-50%);
+      background: var(--text); color: var(--surface);
+      font-size: .75rem; line-height: 1.4;
+      padding: .4rem .65rem; border-radius: var(--radius-sm);
+      white-space: nowrap; max-width: 220px;
+      white-space: normal; z-index: 200;
+      pointer-events: none;
+    }
+
+    /* ── FOOTER ───────────────────────────────────────────── */
+    .site-footer {
+      border-top: 1px solid var(--border);
+      background: var(--surface);
+      padding: 1.25rem 1.5rem;
+      display: flex; flex-direction: column; gap: .5rem;
+      align-items: center; text-align: center;
+    }
+    .footer-disclaimer {
+      font-size: .78rem; color: var(--muted); line-height: 1.6;
+      max-width: 640px;
+    }
+    .footer-links {
+      display: flex; gap: 1rem; flex-wrap: wrap; justify-content: center;
+    }
+    .footer-links a {
+      font-size: .78rem; color: var(--accent);
+      text-decoration: none;
+    }
+    .footer-links a:hover { text-decoration: underline; }
+    .footer-links a:focus-visible { outline: 2px solid var(--accent); border-radius: 2px; }
+
+    /* ── PRINT ────────────────────────────────────────────── */
+    @media print {
+      .site-header, .sidebar, .panel-toolbar, .slider-nav, .disclaimer,
+      .btn-generate, .lang-switcher, .mode-toggle, .btn-small { display: none !important; }
+      .layout { grid-template-columns: 1fr !important; }
+      .main-panel { box-shadow: none; border: 1px solid #ccc; }
+      .slide-card { background: #f8f8ff; }
+      body { font-size: 12pt; }
+      a[href]::after { content: " (" attr(href) ")"; font-size: .75em; color: #555; }
+    }
+
+    /* ── HIDDEN UTILITY ───────────────────────────────────── */
+    .hidden { display: none !important; }
+    .sr-only {
+      position: absolute; width: 1px; height: 1px;
+      padding: 0; margin: -1px; overflow: hidden;
+      clip: rect(0,0,0,0); white-space: nowrap; border: 0;
+    }
+
+    /* ── SIMPLE LANGUAGE MODE ────────────────────────────── */
+    body.simple .clinical { display: none !important; }
+    body:not(.simple) .simple-text { display: none !important; }
+
+    /* ── ANIMATIONS ───────────────────────────────────────── */
+    @media (prefers-reduced-motion: no-preference) {
+      .slide-card { animation: fadeIn .2s ease; }
+      @keyframes fadeIn { from { opacity: 0; transform: translateY(4px); } to { opacity: 1; transform: none; } }
+    }
+  </style>
 </head>
-<body class="bg-gray-50 text-gray-800">
-  <div class="max-w-7xl mx-auto p-6">
 
-    <header class="mb-8">
-      <h1 class="text-3xl font-bold mb-3 text-center">Neurofibromatosis Symptoms Tracker</h1>
-    </header>
+<body>
+  <!-- Skip navigation (WCAG 2.4.1) -->
+  <a href="#main-content" class="skip-link" data-i18n="skip">Saltar para o conteúdo</a>
 
-    <div class="grid grid-cols-1 lg:grid-cols-2 gap-8 items-start">
-      <aside class="space-y-8" aria-label="Select your symptoms">
-        <div id="selectedCount" class="text-sm text-gray-600"></div>
-        <div id="symptomList" class="space-y-8"></div>
-        <button id="generateBtn" class="w-full sticky bottom-4 mt-2 bg-blue-600 text-white px-5 py-3 rounded-xl shadow hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-600">
-          Generate Individual Infographics
-        </button>
-      </aside>
-
-      <main id="resultsPanel" class="bg-white rounded-2xl shadow-sm border border-gray-200 p-6" aria-live="polite">
-        <div class="flex flex-wrap items-center gap-3 mb-4">
-          <div class="inline-flex rounded-lg overflow-hidden border" role="tablist" aria-label="View mode">
-            <button id="tabIndividual" role="tab" aria-selected="true" aria-controls="tabPanel" class="px-3 py-2 text-sm font-medium bg-gray-900 text-white">Individual</button>
-            <button id="tabOverview" role="tab" aria-selected="false" aria-controls="tabPanel" class="px-3 py-2 text-sm font-medium bg-white">Overview</button>
-          </div>
-          <div class="ml-auto flex gap-2">
-            <button id="btnPrint" class="px-3 py-2 text-sm rounded border hover:bg-gray-50">Print</button>
-          </div>
-        </div>
-
-        <div id="tabPanel" role="tabpanel">
-          <div id="emptyState" class="text-gray-500">Select symptoms on the left and click "Generate Individual Infographics".</div>
-
-          <div id="slider" class="hidden">
-            <div class="flex items-center justify-between mb-3">
-              <button id="btnPrev" class="px-3 py-2 text-sm rounded border hover:bg-gray-50" aria-label="Previous">◀ Previous</button>
-              <div id="slidePos" class="text-sm text-gray-600"></div>
-              <button id="btnNext" class="px-3 py-2 text-sm rounded border hover:bg-gray-50" aria-label="Next">Next ▶</button>
-            </div>
-            <article id="slideCard" class="bg-indigo-50 rounded-2xl p-5 border border-indigo-100"></article>
-          </div>
-
-          <div id="overviewGrid" class="hidden sm:grid-cols-2 gap-4"></div>
-        </div>
-      </main>
-    </div>
+  <!-- Medical disclaimer banner -->
+  <div role="note" aria-label="Aviso médico" class="disclaimer">
+    <svg viewBox="0 0 16 16" fill="none" aria-hidden="true">
+      <path d="M8 2L2 14h12L8 2z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+      <path d="M8 7v3M8 12v.5" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/>
+    </svg>
+    <span data-i18n="disclaimer"></span>
   </div>
 
-  <script>
-    const CATEGORIES = [
-      { id: 'skin', title: 'Skin Manifestations', items: [
-        { id: 'cafe-au-lait', name: 'Café-au-lait spots', prevalence: '95-100%', rateNum: 97, description: 'Light brown patches on the skin that are present from birth or appear in early childhood.', whatIsIt: 'Patches of darker skin that can vary in size and number. Six or more larger than 5mm (children) or 15mm (adults) is a diagnostic feature.', causes: ['Pigment changes related to NF1 gene effects','Usually harmless on their own'], affects: ['Generally no physical symptoms','May be an early sign to monitor'], management: ['Regular skin checks','Photographs to track changes'], sources: [{ label: 'CTF: Possible NF1 — Café-au-lait Spots (PDF)', url: 'https://www.ctf.org/wp-content/uploads/2023/11/CTF_PossibleNF1_CALS_Brochure.pdf' }] },
-        { id: 'neurofibromas', name: 'Neurofibromas', prevalence: '99%', rateNum: 99, description: 'Benign tumors that grow on nerves throughout the body. They can be cutaneous (on the skin) or plexiform (deeper).', whatIsIt: 'Soft, benign nerve-sheath tumors that may appear on/under the skin or along deeper nerves (plexiform).', causes: ['NF1 gene mutation affecting tumor suppression','Overgrowth of nerve tissue'], affects: ['May cause tingling/pain if pressing on nerves','Can affect appearance and self-esteem','Rarely, some can transform to malignant tumors'], management: ['Regular monitoring by healthcare team','MRI scans if internal involvement is suspected','Surgical removal if causing problems','Pain management as needed'] },
-        { id: 'freckling', name: 'Freckling in armpits/groin', prevalence: '90%', rateNum: 90, description: 'Small freckles that appear in skin-fold areas such as armpits, groin or under the breast.', whatIsIt: 'Clusters of freckles in body folds (axillary/inguinal freckling).', causes: ['Pigment changes related to NF1'], affects: ['Cosmetic impact only; generally harmless'], management: ['Observation; note distribution and timing'] },
-      ]},
-      { id: 'neuro', title: 'Neurological & Cognitive', items: [
-        { id: 'learning', name: 'Learning disabilities', prevalence: '50-75%', rateNum: 60, description: 'Difficulties with skills like reading, writing, math, attention or processing speed.', whatIsIt: 'Neurodevelopmental differences affecting academic or executive skills.', causes: ['NF1-related brain development differences'], affects: ['School performance','Organization and attention'], management: ['Educational supports and accommodations','Neuropsychological assessment'] },
-        { id: 'adhd', name: 'ADHD', prevalence: '30-50%', rateNum: 40, description: 'Attention Deficit/Hyperactivity with inattention, hyperactivity or impulsiveness.', whatIsIt: 'A behavioral pattern that impacts attention and activity levels.', causes: ['Neurobiological differences associated with NF1'], affects: ['Focus, task completion, impulsivity'], management: ['Behavioral strategies','School/clinical support'] },
-        { id: 'seizures', name: 'Seizures', prevalence: '4-7%', rateNum: 6, description: 'Abnormal brain electrical activity causing brief staring spells to convulsions.', whatIsIt: 'Episodes of altered awareness or movements.', causes: ['Various, sometimes related to NF1 lesions'], affects: ['Safety and daily activities'], management: ['Neurology follow-up','Medication if indicated'] },
-      ]},
-      { id: 'eye', title: 'Eye & Vision', items: [
-        { id: 'optic-gliomas', name: 'Optic gliomas', prevalence: '15-20%', rateNum: 18, description: 'Benign tumors on the optic nerve/pathway that can affect vision.', whatIsIt: 'Slow-growing tumors along the optic pathway.', causes: ['Tumor growth related to NF1'], affects: ['Vision, eye movements'], management: ['Regular ophthalmology exams','MRI monitoring; treatment only if progressive'] },
-        { id: 'lisch', name: 'Lisch nodules', prevalence: '90-95%', rateNum: 92, description: 'Small, harmless brown spots on the iris, visible with special equipment.', whatIsIt: 'Melanocytic hamartomas of the iris.', causes: ['Pigment cell changes'], affects: ['No effect on vision'], management: ['Observation during routine eye exams'] },
-      ]},
-      { id: 'skeletal', title: 'Skeletal & Growth', items: [
-        { id: 'short-stature', name: 'Short stature', prevalence: '30-50%', rateNum: 40, description: 'Below-average height for age, often apparent in childhood.', whatIsIt: 'Growth pattern differences.', causes: ['Complex growth regulation in NF1'], affects: ['Growth charts and expectations'], management: ['Pediatric monitoring; endocrinology if needed'] },
-        { id: 'macrocephaly', name: 'Large head circumference', prevalence: '30-50%', rateNum: 40, description: 'Head size larger than average (macrocephaly).', whatIsIt: 'Benign macrocephaly common in NF1.', causes: ['Brain/cranial growth differences'], affects: ['Usually asymptomatic'], management: ['Measure and track; imaging only if there are concerns'] },
-        { id: 'scoliosis', name: 'Scoliosis', prevalence: '10-30%', rateNum: 20, description: 'Abnormal curvature of the spine.', whatIsIt: 'Spinal curve that may progress.', causes: ['Skeletal development differences'], affects: ['Posture, back pain if severe'], management: ['Orthopedic evaluation; bracing or surgery if needed'] },
-      ]},
-      { id: 'other', title: 'Other Medical Issues', items: [
-        { id: 'hypertension', name: 'High blood pressure', prevalence: '10-15%', rateNum: 12, description: 'Elevated blood pressure that may be related to kidney or vascular abnormalities.', whatIsIt: 'Systemic hypertension.', causes: ['Renal artery stenosis, pheochromocytoma (rare)','Essential causes'], affects: ['Cardiovascular risk if untreated'], management: ['Regular blood pressure checks','Treat underlying causes'] },
-      ]}
-    ];
+  <!-- Header -->
+  <header class="site-header">
+    <h1>NF1 <em data-i18n="header_subtitle">Tracker</em></h1>
 
-    const DEFAULT_SOURCES = [
-      { label: "Sources", url: 'https://www.ctf.org/nf1/#manifestations' }
-    ];
+    <!-- Language switcher -->
+    <div class="lang-switcher" role="group" aria-label="Idioma / Language / Idioma">
+      <button class="lang-btn active" onclick="setLang('pt')" aria-label="Português" aria-pressed="true">PT</button>
+      <button class="lang-btn" onclick="setLang('en')" aria-label="English" aria-pressed="false">EN</button>
+      <button class="lang-btn" onclick="setLang('es')" aria-label="Español" aria-pressed="false">ES</button>
+    </div>
 
-    const selected = new Set();
-    let mode = 'individual';
-    let cards = [];
-    let activeIndex = 0;
+    <!-- Simple language toggle -->
+    <div class="mode-toggle">
+      <label for="simpleMode" data-i18n="simple_mode" style="cursor:pointer;"></label>
+      <label class="mode-switch" aria-label="Ativar linguagem simples">
+        <input type="checkbox" id="simpleMode" onchange="toggleSimple(this.checked)" />
+        <span class="mode-slider"></span>
+      </label>
+    </div>
+  </header>
 
-    const elList = document.getElementById('symptomList');
-    const elCount = document.getElementById('selectedCount');
-    const elGenerate = document.getElementById('generateBtn');
+  <!-- Main layout -->
+  <div class="layout">
 
-    const elEmpty = document.getElementById('emptyState');
-    const elSlider = document.getElementById('slider');
-    const elSlideCard = document.getElementById('slideCard');
-    const elOverview = document.getElementById('overviewGrid');
-    const elPos = document.getElementById('slidePos');
+    <!-- Sidebar: symptom selector -->
+    <aside aria-labelledby="symptoms-heading">
+      <h2 id="symptoms-heading" class="sr-only" data-i18n="select_symptoms">Selecionar sintomas</h2>
+      <div class="sidebar">
+        <div id="selectedCount" class="selected-count" aria-live="polite" aria-atomic="true"></div>
+        <div id="symptomList" role="list"></div>
+        <button id="generateBtn" class="btn-generate" onclick="generate()" disabled>
+          <span data-i18n="generate_btn">Gerar infográficos</span>
+        </button>
+      </div>
+    </aside>
 
-    const tabIndividual = document.getElementById('tabIndividual');
-    const tabOverview = document.getElementById('tabOverview');
+    <!-- Main content panel -->
+    <main id="main-content" class="main-panel" aria-label="Painel de resultados">
+      <!-- Toolbar -->
+      <div class="panel-toolbar">
+        <div class="tab-group" role="tablist" aria-label="Vista">
+          <button id="tabIndividual" role="tab" aria-selected="true"
+            aria-controls="tabPanel" onclick="setMode('individual')"
+            class="tab-btn" data-i18n="tab_individual">Individual</button>
+          <button id="tabOverview" role="tab" aria-selected="false"
+            aria-controls="tabPanel" onclick="setMode('overview')"
+            class="tab-btn" data-i18n="tab_overview">Visão geral</button>
+        </div>
+        <div style="margin-left:auto;display:flex;gap:.4rem;">
+          <button class="btn-small" onclick="window.print()" aria-label="Imprimir">
+            <svg width="14" height="14" viewBox="0 0 16 16" fill="none" aria-hidden="true">
+              <rect x="3" y="1" width="10" height="7" rx="1" stroke="currentColor" stroke-width="1.4"/>
+              <rect x="3" y="9" width="10" height="6" rx="1" stroke="currentColor" stroke-width="1.4"/>
+              <path d="M3 11h10" stroke="currentColor" stroke-width="1.2"/>
+            </svg>
+            <span data-i18n="print">Imprimir</span>
+          </button>
+        </div>
+      </div>
 
-    function renderSymptoms() {
-      elList.innerHTML = '';
-      CATEGORIES.forEach(cat => {
-        const section = document.createElement('section');
-        section.className = 'bg-white rounded-2xl shadow-sm border border-gray-200';
-        section.innerHTML = `<div class="p-5 border-b"><h2 class="text-lg font-semibold">${cat.title}</h2></div>`;
-        const ul = document.createElement('ul');
-        ul.className = 'divide-y';
+      <!-- Tab panel -->
+      <div id="tabPanel" role="tabpanel">
+        <div class="panel-body">
 
-        cat.items.forEach(item => {
-          const isOn = selected.has(item.id);
-          const li = document.createElement('li');
-          li.className = `p-5 flex gap-4 items-start justify-between ${isOn ? 'bg-blue-50' : 'bg-white'}`;
-          li.innerHTML = `
-            <div class="flex-1 pr-4">
-              <div class="flex items-center gap-2">
-                <h3 class="font-medium">${item.name}</h3>
-                <span class="text-xs bg-gray-100 rounded px-2 py-0.5 text-gray-700">${item.prevalence}</span>
-              </div>
-              <p class="text-sm text-gray-600 mt-1">${item.description}</p>
+          <!-- Empty state -->
+          <div id="emptyState" class="empty-state">
+            <svg viewBox="0 0 48 48" fill="none" aria-hidden="true">
+              <circle cx="24" cy="24" r="20" stroke="currentColor" stroke-width="2"/>
+              <path d="M16 24h16M24 16v16" stroke="currentColor" stroke-width="2" stroke-linecap="round"/>
+            </svg>
+            <p data-i18n="empty_state"></p>
+          </div>
+
+          <!-- Individual slider -->
+          <div id="slider" class="hidden" aria-live="polite">
+            <div class="slider-nav">
+              <button class="btn-small" id="btnPrev" onclick="prevSlide()" aria-label="Anterior">
+                ◀ <span data-i18n="prev">Anterior</span>
+              </button>
+              <span id="slidePos" class="slide-pos" aria-live="polite"></span>
+              <button class="btn-small" id="btnNext" onclick="nextSlide()" aria-label="Próximo">
+                <span data-i18n="next">Próximo</span> ▶
+              </button>
             </div>
-            <label class="flex items-center gap-3 cursor-pointer select-none">
-              <input type="checkbox" class="sr-only" aria-label="Toggle symptom: ${item.name}" ${isOn ? 'checked' : ''} />
-              <span class="relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${isOn ? 'bg-blue-600' : 'bg-gray-300'}">
-                <span class="inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${isOn ? 'translate-x-5' : 'translate-x-1'}"></span>
-              </span>
-            </label>`;
+            <article id="slideCard" class="slide-card"></article>
+          </div>
 
-          const checkbox = li.querySelector('input');
-          checkbox.addEventListener('change', (e) => {
-            const on = e.target.checked;
-            if (on) selected.add(item.id); else selected.delete(item.id);
-            li.className = `p-5 flex gap-4 items-start justify-between ${on ? 'bg-blue-50' : 'bg-white'}`;
-            const track = li.querySelector('span.relative');
-            const knob = li.querySelector('span.inline-block');
-            track.className = `relative inline-flex h-6 w-11 items-center rounded-full transition-colors ${on ? 'bg-blue-600' : 'bg-gray-300'}`;
-            knob.className = `inline-block h-5 w-5 transform rounded-full bg-white transition-transform ${on ? 'translate-x-5' : 'translate-x-1'}`;
-            updateSelectedCount();
-          });
+          <!-- Overview grid -->
+          <div id="overviewGrid" class="hidden overview-grid"></div>
 
-          ul.appendChild(li);
+        </div>
+      </div>
+    </main>
+  </div>
+
+  <!-- Footer -->
+  <footer class="site-footer">
+    <p class="footer-disclaimer" data-i18n="footer_disclaimer"></p>
+    <nav class="footer-links" aria-label="Links externos">
+      <a href="https://www.ctf.org" target="_blank" rel="noopener noreferrer">Children's Tumor Foundation</a>
+      <a href="https://www.nord.org/diseases/neurofibromatosis-type-1/" target="_blank" rel="noopener noreferrer">NORD — NF1</a>
+      <a href="https://www.orpha.net/en/disease/detail/636" target="_blank" rel="noopener noreferrer">Orphanet</a>
+    </nav>
+    <p style="font-size:.72rem;color:var(--faint);" data-i18n="last_reviewed"></p>
+  </footer>
+
+  <script>
+  'use strict';
+
+  /* ════════════════════════════════════════
+     INTERNATIONALISATION (i18n)
+  ════════════════════════════════════════ */
+  const LANGS = {
+    pt: {
+      skip: 'Saltar para o conteúdo',
+      disclaimer: 'Esta ferramenta é apenas educacional e não substitui aconselhamento médico profissional. Consulte sempre o seu médico.',
+      header_subtitle: 'Tracker',
+      simple_mode: 'Linguagem simples',
+      select_symptoms: 'Selecionar sintomas',
+      generate_btn: 'Gerar infográficos',
+      tab_individual: 'Individual',
+      tab_overview: 'Visão geral',
+      print: 'Imprimir',
+      empty_state: 'Selecione um ou mais sintomas na coluna da esquerda e clique em "Gerar infográficos".',
+      prev: 'Anterior',
+      next: 'Próximo',
+      of: 'de',
+      selected_none: 'Nenhum sintoma selecionado',
+      selected_one: '1 sintoma selecionado',
+      selected_many: (n) => `${n} sintomas selecionados`,
+      prevalence: 'Prevalência na NF1',
+      what_is_it: 'O que é?',
+      causes: 'Causas',
+      affects: 'Como afeta',
+      management: 'Tratamento e apoio',
+      how_common: 'Frequência',
+      sources: 'Fontes',
+      opens_new_tab: 'Abre numa nova aba.',
+      next_steps: 'Próximos passos recomendados',
+      timeline: 'Quando costuma aparecer',
+      overview_prev: 'Prevalência:',
+      footer_disclaimer: 'Esta ferramenta é de carácter educacional. Não substitui diagnóstico, tratamento ou aconselhamento médico profissional. Em caso de dúvida, consulte sempre um profissional de saúde.',
+      last_reviewed: 'Conteúdo revisto em 2025 com base em diretrizes clínicas internacionais.',
+      phase: { birth: 'Nascimento', child: 'Infância', teen: 'Adolescência', adult: 'Adulto' },
+    },
+    en: {
+      skip: 'Skip to content',
+      disclaimer: 'This tool is educational only and does not replace professional medical advice. Always consult your doctor.',
+      header_subtitle: 'Tracker',
+      simple_mode: 'Simple language',
+      select_symptoms: 'Select symptoms',
+      generate_btn: 'Generate infographics',
+      tab_individual: 'Individual',
+      tab_overview: 'Overview',
+      print: 'Print',
+      empty_state: 'Select one or more symptoms on the left and click "Generate infographics".',
+      prev: 'Previous',
+      next: 'Next',
+      of: 'of',
+      selected_none: 'No symptoms selected',
+      selected_one: '1 symptom selected',
+      selected_many: (n) => `${n} symptoms selected`,
+      prevalence: 'Prevalence in NF1',
+      what_is_it: 'What is it?',
+      causes: 'Causes',
+      affects: 'How it affects me',
+      management: 'Management & Support',
+      how_common: 'How common is this?',
+      sources: 'Sources',
+      opens_new_tab: 'Opens in a new tab.',
+      next_steps: 'Recommended next steps',
+      timeline: 'When does it typically appear?',
+      overview_prev: 'Prevalence:',
+      footer_disclaimer: 'This tool is educational in nature. It does not replace professional medical diagnosis, treatment, or advice. When in doubt, always consult a healthcare professional.',
+      last_reviewed: 'Content reviewed in 2025 based on international clinical guidelines.',
+      phase: { birth: 'Birth', child: 'Childhood', teen: 'Adolescence', adult: 'Adulthood' },
+    },
+    es: {
+      skip: 'Saltar al contenido',
+      disclaimer: 'Esta herramienta es solo educativa y no sustituye el asesoramiento médico profesional. Consulte siempre a su médico.',
+      header_subtitle: 'Tracker',
+      simple_mode: 'Lenguaje sencillo',
+      select_symptoms: 'Seleccionar síntomas',
+      generate_btn: 'Generar infografías',
+      tab_individual: 'Individual',
+      tab_overview: 'Vista general',
+      print: 'Imprimir',
+      empty_state: 'Seleccione uno o más síntomas en la columna de la izquierda y haga clic en "Generar infografías".',
+      prev: 'Anterior',
+      next: 'Siguiente',
+      of: 'de',
+      selected_none: 'Ningún síntoma seleccionado',
+      selected_one: '1 síntoma seleccionado',
+      selected_many: (n) => `${n} síntomas seleccionados`,
+      prevalence: 'Prevalencia en NF1',
+      what_is_it: '¿Qué es?',
+      causes: 'Causas',
+      affects: 'Cómo me afecta',
+      management: 'Tratamiento y apoyo',
+      how_common: '¿Con qué frecuencia ocurre?',
+      sources: 'Fuentes',
+      opens_new_tab: 'Abre en una nueva pestaña.',
+      next_steps: 'Próximos pasos recomendados',
+      timeline: '¿Cuándo suele aparecer?',
+      overview_prev: 'Prevalencia:',
+      footer_disclaimer: 'Esta herramienta tiene carácter educativo. No reemplaza el diagnóstico, tratamiento ni asesoramiento médico profesional. En caso de duda, consulte siempre a un profesional de la salud.',
+      last_reviewed: 'Contenido revisado en 2025 con base en guías clínicas internacionales.',
+      phase: { birth: 'Nacimiento', child: 'Infancia', teen: 'Adolescencia', adult: 'Adulto' },
+    }
+  };
+
+  /* ════════════════════════════════════════
+     SYMPTOM DATA — NF1 ONLY
+     Fields per item:
+       id, name, nameSimple, prevalence, rateNum,
+       description (clinical), descSimple,
+       whatIsIt (clinical), whatSimple,
+       causes[], causesSimple[],
+       affects[], affectsSimple[],
+       management[], nextSteps[],
+       timeline: { onset: phase, active: [phases] },
+       sources: [{ label, url }]
+  ════════════════════════════════════════ */
+  const CATEGORIES = [
+    {
+      id: 'skin',
+      icon: '<path d="M8 2C4.7 2 2 4.7 2 8s2.7 6 6 6 6-2.7 6-6-2.7-6-6-6z" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M5 8c0-1.66 1.34-3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round"/>',
+      color: 'var(--amber-bg)', iconColor: 'var(--amber)',
+      titles: { pt: 'Manifestações Cutâneas', en: 'Skin Manifestations', es: 'Manifestaciones Cutáneas' },
+      items: [
+        {
+          id: 'cafe-au-lait',
+          names: { pt: 'Manchas café-au-lait', en: 'Café-au-lait spots', es: 'Manchas café con leche' },
+          namesSimple: { pt: 'Manchas castanhas na pele', en: 'Light brown skin patches', es: 'Manchas marrones en la piel' },
+          prevalence: '95–100%', rateNum: 97,
+          desc: {
+            pt: 'Manchas de pigmentação castanha clara presentes desde o nascimento ou que surgem na primeira infância.',
+            en: 'Light brown pigmentation patches present from birth or appearing in early childhood.',
+            es: 'Manchas de pigmentación marrón claro presentes desde el nacimiento o que aparecen en la primera infancia.'
+          },
+          descSimple: {
+            pt: 'Manchas castanhas claras que aparecem na pele, geralmente desde bebé.',
+            en: 'Light brown patches that appear on the skin, usually from birth.',
+            es: 'Manchas marrones claras que aparecen en la piel, generalmente desde bebé.'
+          },
+          whatIsIt: {
+            pt: 'Zonas de hiperpigmentação da pele. Seis ou mais manchas maiores que 5 mm (crianças) ou 15 mm (adultos) são critério de diagnóstico da NF1.',
+            en: 'Areas of skin hyperpigmentation. Six or more spots larger than 5mm (children) or 15mm (adults) are a diagnostic criterion for NF1.',
+            es: 'Zonas de hiperpigmentación cutánea. Seis o más manchas mayores de 5mm (niños) o 15mm (adultos) son criterio diagnóstico de NF1.'
+          },
+          whatSimple: {
+            pt: 'São manchas castanhas que algumas pessoas têm na pele. Quando aparecem muitas, podem ser um sinal de NF1.',
+            en: 'Brown patches on the skin. When many appear, they can be a sign of NF1.',
+            es: 'Son manchas marrones en la piel. Cuando aparecen muchas, pueden ser una señal de NF1.'
+          },
+          causes: {
+            pt: ['Mutação no gene NF1, que afeta a produção de neurofibromina','Alterações locais das células pigmentares (melanócitos)'],
+            en: ['Mutation in the NF1 gene, affecting neurofibromin production','Local changes in pigment cells (melanocytes)'],
+            es: ['Mutación en el gen NF1, que afecta la producción de neurofibromina','Cambios locales en las células pigmentarias (melanocitos)']
+          },
+          causesSimple: {
+            pt: ['O gene NF1 não funciona corretamente e isso afeta a cor da pele'],
+            en: ['The NF1 gene does not work correctly, which affects skin color'],
+            es: ['El gen NF1 no funciona correctamente y eso afecta el color de la piel']
+          },
+          affects: {
+            pt: ['Geralmente sem sintomas físicos','Podem ser um sinal precoce a monitorizar'],
+            en: ['Usually no physical symptoms','May be an early sign to monitor'],
+            es: ['Generalmente sin síntomas físicos','Pueden ser una señal temprana a monitorizar']
+          },
+          affectsSimple: {
+            pt: ['Normalmente não doem nem incomodam','São importantes para o médico as ver'],
+            en: ['Usually do not hurt or cause problems','Important for the doctor to see them'],
+            es: ['Normalmente no duelen ni molestan','Son importantes para que el médico las vea']
+          },
+          management: {
+            pt: ['Monitorização regular da pele','Fotografias para seguir a evolução','Consulta de dermatologia se surgir alteração'],
+            en: ['Regular skin check-ups','Photographs to track changes','Dermatology referral if changes appear'],
+            es: ['Revisión dermatológica regular','Fotografías para seguir la evolución','Derivación a dermatología si hay cambios']
+          },
+          nextSteps: {
+            pt: ['Marcar consulta com médico de família ou pediatra','Fotografar as manchas para comparação futura','Perguntar ao médico sobre encaminhamento para especialista em NF'],
+            en: ['Book an appointment with your GP or pediatrician','Photograph the spots for future comparison','Ask about referral to an NF specialist'],
+            es: ['Pedir cita con el médico de familia o pediatra','Fotografiar las manchas para comparación futura','Preguntar sobre derivación a especialista en NF']
+          },
+          timeline: { onset: 'birth', active: ['birth','child'] },
+          sources: [
+            { label: 'CTF — Café-au-lait Spots (PDF)', url: 'https://www.ctf.org/wp-content/uploads/2023/11/CTF_PossibleNF1_CALS_Brochure.pdf' },
+            { label: 'NORD — NF1 Overview', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'neurofibromas',
+          names: { pt: 'Neurofibromas', en: 'Neurofibromas', es: 'Neurofibromas' },
+          namesSimple: { pt: 'Caroços benignos nos nervos', en: 'Benign nerve lumps', es: 'Bultos benignos en los nervios' },
+          prevalence: '99%', rateNum: 99,
+          desc: {
+            pt: 'Tumores benignos que crescem nos nervos. Podem ser cutâneos (na pele) ou plexiformes (mais profundos).',
+            en: 'Benign tumors that grow on nerves. They can be cutaneous (on the skin) or plexiform (deeper).',
+            es: 'Tumores benignos que crecen en los nervios. Pueden ser cutáneos (en la piel) o plexiformes (más profundos).'
+          },
+          descSimple: {
+            pt: 'Pequenos caroços moles que crescem na pele ou dentro do corpo, perto dos nervos.',
+            en: 'Small soft lumps that grow on the skin or inside the body, near nerves.',
+            es: 'Pequeños bultos blandos que crecen en la piel o dentro del cuerpo, cerca de los nervios.'
+          },
+          whatIsIt: {
+            pt: 'Tumores benignos da bainha nervosa. Os cutâneos aparecem sobre/sob a pele; os plexiformes crescem ao longo de nervos maiores e podem ser extensos.',
+            en: 'Benign nerve-sheath tumors. Cutaneous ones appear on/under the skin; plexiform ones grow along larger nerves and can be extensive.',
+            es: 'Tumores benignos de la vaina nerviosa. Los cutáneos aparecen sobre/bajo la piel; los plexiformes crecen a lo largo de nervios mayores y pueden ser extensos.'
+          },
+          whatSimple: {
+            pt: 'São como pequenas bolas moles debaixo da pele. Na maioria das vezes são inofensivos, mas é importante que o médico os vigie.',
+            en: 'Like small soft balls under the skin. Usually harmless, but important for your doctor to monitor.',
+            es: 'Como pequeñas pelotas blandas bajo la piel. En general son inofensivos, pero es importante que el médico los vigile.'
+          },
+          causes: {
+            pt: ['Mutação no gene NF1 que compromete a supressão tumoral','Crescimento excessivo do tecido nervoso'],
+            en: ['NF1 gene mutation impairing tumor suppression','Overgrowth of nerve tissue'],
+            es: ['Mutación en el gen NF1 que compromete la supresión tumoral','Crecimiento excesivo del tejido nervioso']
+          },
+          causesSimple: {
+            pt: ['O gene NF1 não consegue travar o crescimento de algumas células'],
+            en: ['The NF1 gene cannot stop the growth of some cells'],
+            es: ['El gen NF1 no puede detener el crecimiento de algunas células']
+          },
+          affects: {
+            pt: ['Podem causar dor ou formigueiro se pressionarem nervos','Podem afetar a aparência e a autoestima','Raramente, alguns transformam-se em tumores malignos (MPNST)'],
+            en: ['May cause pain or tingling if pressing on nerves','Can affect appearance and self-esteem','Rarely, some can transform into malignant tumors (MPNST)'],
+            es: ['Pueden causar dolor u hormigueo si presionan nervios','Pueden afectar la apariencia y la autoestima','En raras ocasiones, algunos se transforman en tumores malignos (MPNST)']
+          },
+          affectsSimple: {
+            pt: ['Podem fazer doer ou causar formigueiro','Às vezes preocupam as pessoas com a aparência'],
+            en: ['Can cause pain or tingling','Sometimes people worry about how they look'],
+            es: ['Pueden doler o causar hormigueo','A veces preocupan a las personas por su apariencia']
+          },
+          management: {
+            pt: ['Vigilância regular pela equipa médica','Ressonância magnética se houver suspeita de envolvimento interno','Remoção cirúrgica se causar problemas','Gestão da dor se necessário'],
+            en: ['Regular monitoring by the healthcare team','MRI if internal involvement is suspected','Surgical removal if causing problems','Pain management if needed'],
+            es: ['Vigilancia regular por el equipo médico','Resonancia magnética si se sospecha afectación interna','Extirpación quirúrgica si causa problemas','Manejo del dolor si es necesario']
+          },
+          nextSteps: {
+            pt: ['Registar localização e tamanho dos neurofibromas com fotografias','Comunicar qualquer crescimento rápido ou dor ao médico','Perguntar sobre seguimento com neurologista ou cirurgião'],
+            en: ['Record location and size with photographs','Report any rapid growth or pain to your doctor','Ask about follow-up with a neurologist or surgeon'],
+            es: ['Registrar localización y tamaño con fotografías','Comunicar cualquier crecimiento rápido o dolor al médico','Preguntar sobre seguimiento con neurólogo o cirujano']
+          },
+          timeline: { onset: 'teen', active: ['teen','adult'] },
+          sources: [
+            { label: 'CTF — Neurofibromas', url: 'https://www.ctf.org/understanding-nf/nf1/neurofibromas/' },
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'freckling',
+          names: { pt: 'Sardas axilares e inguinais', en: 'Axillary / inguinal freckling', es: 'Efélides axilares e inguinales' },
+          namesSimple: { pt: 'Sardas nas pregas da pele', en: 'Freckles in skin folds', es: 'Pecas en pliegues de la piel' },
+          prevalence: '90%', rateNum: 90,
+          desc: {
+            pt: 'Sardas que aparecem em zonas de dobras da pele como axilas, virilhas ou abaixo do peito.',
+            en: 'Small freckles appearing in skin-fold areas such as armpits, groin, or under the breast.',
+            es: 'Pequeñas pecas que aparecen en zonas de pliegues cutáneos como axilas, ingles o bajo el pecho.'
+          },
+          descSimple: {
+            pt: 'Pequenas sardas em lugares onde a pele dobra, como debaixo dos braços.',
+            en: 'Small freckles where the skin folds, like under the arms.',
+            es: 'Pequeñas pecas donde la piel se dobla, como debajo de los brazos.'
+          },
+          whatIsIt: {
+            pt: 'Sardas axilares e inguinais (sinal de Crowe). Critério de diagnóstico da NF1.',
+            en: 'Axillary and inguinal freckling (Crowe\'s sign). A diagnostic criterion for NF1.',
+            es: 'Efélides axilares e inguinales (signo de Crowe). Criterio diagnóstico de NF1.'
+          },
+          whatSimple: {
+            pt: 'São sardas que aparecem em lugares pouco comuns, como debaixo dos braços. São um sinal de NF1.',
+            en: 'Freckles that appear in unusual places like under the arms. They are a sign of NF1.',
+            es: 'Son pecas que aparecen en lugares poco comunes, como bajo los brazos. Son una señal de NF1.'
+          },
+          causes: {
+            pt: ['Alterações de pigmentação relacionadas com a NF1'],
+            en: ['Pigmentation changes related to NF1'],
+            es: ['Cambios de pigmentación relacionados con NF1']
+          },
+          causesSimple: {
+            pt: ['Acontecem por causa do NF1'],
+            en: ['Happen because of NF1'],
+            es: ['Ocurren debido a la NF1']
+          },
+          affects: {
+            pt: ['Impacto cosmético; geralmente sem consequências médicas'],
+            en: ['Cosmetic impact; generally no medical consequences'],
+            es: ['Impacto cosmético; generalmente sin consecuencias médicas']
+          },
+          affectsSimple: {
+            pt: ['Não doem nem prejudicam a saúde'],
+            en: ['They do not hurt or harm health'],
+            es: ['No duelen ni perjudican la salud']
+          },
+          management: {
+            pt: ['Observação; registar distribuição e surgimento','Úteis para diagnóstico de NF1'],
+            en: ['Observation; note distribution and onset','Useful for NF1 diagnosis'],
+            es: ['Observación; registrar distribución y aparición','Útiles para el diagnóstico de NF1']
+          },
+          nextSteps: {
+            pt: ['Mostrar ao médico para apoiar o processo de diagnóstico'],
+            en: ['Show to your doctor to support the diagnostic process'],
+            es: ['Mostrar al médico para apoyar el proceso diagnóstico']
+          },
+          timeline: { onset: 'child', active: ['child','teen'] },
+          sources: [
+            { label: 'Orphanet — NF1', url: 'https://www.orpha.net/en/disease/detail/636' }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'neuro',
+      icon: '<ellipse cx="8" cy="8" rx="5.5" ry="4" stroke="currentColor" stroke-width="1.4" fill="none"/><path d="M5 6c1 1 2 1.5 3 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/><path d="M5 10c1-1 2-1.5 3 0" stroke="currentColor" stroke-width="1.2" stroke-linecap="round"/>',
+      color: 'var(--indigo-bg)', iconColor: 'var(--indigo)',
+      titles: { pt: 'Neurológico e Cognitivo', en: 'Neurological & Cognitive', es: 'Neurológico y Cognitivo' },
+      items: [
+        {
+          id: 'learning',
+          names: { pt: 'Dificuldades de aprendizagem', en: 'Learning disabilities', es: 'Dificultades de aprendizaje' },
+          namesSimple: { pt: 'Dificuldades na escola', en: 'School difficulties', es: 'Dificultades en la escuela' },
+          prevalence: '50–75%', rateNum: 62,
+          desc: {
+            pt: 'Dificuldades em competências como leitura, escrita, matemática, atenção ou velocidade de processamento.',
+            en: 'Difficulties with skills such as reading, writing, math, attention, or processing speed.',
+            es: 'Dificultades en habilidades como lectura, escritura, matemáticas, atención o velocidad de procesamiento.'
+          },
+          descSimple: {
+            pt: 'Pode ser mais difícil aprender algumas coisas na escola, como ler ou fazer contas.',
+            en: 'Some things at school may be harder to learn, like reading or math.',
+            es: 'Algunas cosas en la escuela pueden ser más difíciles de aprender, como leer o hacer cuentas.'
+          },
+          whatIsIt: {
+            pt: 'Diferenças no neurodesenvolvimento que afetam competências académicas ou executivas, presentes em mais de metade dos doentes com NF1.',
+            en: 'Neurodevelopmental differences affecting academic or executive skills, present in more than half of NF1 patients.',
+            es: 'Diferencias en el neurodesarrollo que afectan las habilidades académicas o ejecutivas, presentes en más de la mitad de los pacientes con NF1.'
+          },
+          whatSimple: {
+            pt: 'O cérebro processa algumas informações de forma diferente, o que pode tornar certas aprendizagens mais difíceis.',
+            en: 'The brain processes some information differently, which can make certain learning harder.',
+            es: 'El cerebro procesa cierta información de manera diferente, lo que puede dificultar ciertos aprendizajes.'
+          },
+          causes: {
+            pt: ['Diferenças no desenvolvimento cerebral associadas à NF1','Alterações nos circuitos de memória de trabalho e atenção'],
+            en: ['Brain development differences associated with NF1','Changes in working memory and attention circuits'],
+            es: ['Diferencias en el desarrollo cerebral asociadas a NF1','Cambios en los circuitos de memoria de trabajo y atención']
+          },
+          causesSimple: {
+            pt: ['O NF1 pode afetar a forma como algumas partes do cérebro se desenvolvem'],
+            en: ['NF1 can affect how some parts of the brain develop'],
+            es: ['El NF1 puede afectar cómo se desarrollan algunas partes del cerebro']
+          },
+          affects: {
+            pt: ['Desempenho escolar','Organização e atenção','Velocidade de processamento'],
+            en: ['School performance','Organisation and attention','Processing speed'],
+            es: ['Rendimiento escolar','Organización y atención','Velocidad de procesamiento']
+          },
+          affectsSimple: {
+            pt: ['Pode ser mais difícil ficar com atenção','Pode demorar mais a aprender coisas novas'],
+            en: ['It may be harder to pay attention','It may take longer to learn new things'],
+            es: ['Puede ser más difícil estar atento','Puede llevar más tiempo aprender cosas nuevas']
+          },
+          management: {
+            pt: ['Avaliação neuropsicológica','Apoio educativo e adaptações curriculares','Terapia da fala e terapia ocupacional se indicado','Colaboração com a escola'],
+            en: ['Neuropsychological assessment','Educational support and curriculum adjustments','Speech and occupational therapy if indicated','Collaboration with school'],
+            es: ['Evaluación neuropsicológica','Apoyo educativo y adaptaciones curriculares','Logopedia y terapia ocupacional si está indicado','Colaboración con la escuela']
+          },
+          nextSteps: {
+            pt: ['Pedir avaliação neuropsicológica ao pediatra','Informar a escola do diagnóstico para obter apoio','Contactar a associação local de NF para recursos'],
+            en: ['Request a neuropsychological assessment from your paediatrician','Inform the school of the diagnosis to get support','Contact your local NF association for resources'],
+            es: ['Solicitar evaluación neuropsicológica al pediatra','Informar a la escuela del diagnóstico para obtener apoyo','Contactar la asociación local de NF para recursos']
+          },
+          timeline: { onset: 'child', active: ['child','teen'] },
+          sources: [
+            { label: 'CTF — Learning & NF1', url: 'https://www.ctf.org/understanding-nf/nf1/associated-conditions/learning-disabilities/' },
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'adhd',
+          names: { pt: 'PHDA', en: 'ADHD', es: 'TDAH' },
+          namesSimple: { pt: 'Dificuldade de atenção e hiperatividade', en: 'Attention and hyperactivity difficulty', es: 'Dificultad de atención e hiperactividad' },
+          prevalence: '30–50%', rateNum: 40,
+          desc: {
+            pt: 'Perturbação de Hiperatividade e Défice de Atenção com desatenção, hiperatividade ou impulsividade.',
+            en: 'Attention Deficit Hyperactivity Disorder with inattention, hyperactivity or impulsivity.',
+            es: 'Trastorno por Déficit de Atención con Hiperactividad con falta de atención, hiperactividad o impulsividad.'
+          },
+          descSimple: {
+            pt: 'Dificuldade em prestar atenção e em ficar quieto ou calmo.',
+            en: 'Difficulty paying attention and staying still or calm.',
+            es: 'Dificultad para prestar atención y quedarse quieto o tranquilo.'
+          },
+          whatIsIt: {
+            pt: 'Padrão comportamental com impacto na atenção, regulação da atividade e controlo dos impulsos. Mais prevalente em doentes com NF1 do que na população geral.',
+            en: 'Behavioural pattern affecting attention, activity regulation and impulse control. More prevalent in NF1 patients than in the general population.',
+            es: 'Patrón conductual que afecta la atención, la regulación de la actividad y el control de impulsos. Más prevalente en pacientes con NF1 que en la población general.'
+          },
+          whatSimple: {
+            pt: 'A pessoa tem mais dificuldade em ficar atenta ou em controlar os movimentos do que a maioria das pessoas.',
+            en: 'The person has more difficulty staying focused or controlling movements than most people.',
+            es: 'La persona tiene más dificultad para concentrarse o controlar sus movimientos que la mayoría.'
+          },
+          causes: {
+            pt: ['Diferenças neurobiológicas associadas à NF1','Alteração nos circuitos dopaminérgicos do cérebro'],
+            en: ['Neurobiological differences associated with NF1','Changes in the brain\'s dopaminergic circuits'],
+            es: ['Diferencias neurobiológicas asociadas a NF1','Alteración en los circuitos dopaminérgicos del cerebro']
+          },
+          causesSimple: {
+            pt: ['O NF1 afeta algumas partes do cérebro que controlam a atenção'],
+            en: ['NF1 affects some parts of the brain that control attention'],
+            es: ['El NF1 afecta algunas partes del cerebro que controlan la atención']
+          },
+          affects: {
+            pt: ['Foco, conclusão de tarefas, impulsividade','Desempenho escolar e laboral','Relações sociais'],
+            en: ['Focus, task completion, impulsivity','School and work performance','Social relationships'],
+            es: ['Concentración, finalización de tareas, impulsividad','Rendimiento escolar y laboral','Relaciones sociales']
+          },
+          affectsSimple: {
+            pt: ['É difícil ficar atento durante muito tempo','É difícil esperar pela vez'],
+            en: ['It is hard to stay focused for a long time','It is hard to wait for your turn'],
+            es: ['Es difícil estar atento mucho tiempo','Es difícil esperar el turno']
+          },
+          management: {
+            pt: ['Estratégias comportamentais','Apoio escolar e clínico','Medicação, se indicada pelo médico','Psicoterapia'],
+            en: ['Behavioural strategies','School and clinical support','Medication, if recommended by the doctor','Psychotherapy'],
+            es: ['Estrategias conductuales','Apoyo escolar y clínico','Medicación, si la recomienda el médico','Psicoterapia']
+          },
+          nextSteps: {
+            pt: ['Falar com o pediatra sobre avaliação de PHDA','Explorar estratégias de organização e rotina','Informar a escola'],
+            en: ['Talk to your paediatrician about an ADHD assessment','Explore organisation and routine strategies','Inform the school'],
+            es: ['Hablar con el pediatra sobre evaluación de TDAH','Explorar estrategias de organización y rutina','Informar a la escuela']
+          },
+          timeline: { onset: 'child', active: ['child','teen'] },
+          sources: [
+            { label: 'CTF — ADHD & NF1', url: 'https://www.ctf.org/understanding-nf/nf1/associated-conditions/attention-deficit-hyperactivity-disorder/' },
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'seizures',
+          names: { pt: 'Convulsões / Epilepsia', en: 'Seizures / Epilepsy', es: 'Convulsiones / Epilepsia' },
+          namesSimple: { pt: 'Crises no cérebro', en: 'Brain episodes', es: 'Crisis cerebrales' },
+          prevalence: '4–7%', rateNum: 6,
+          desc: {
+            pt: 'Atividade elétrica anormal no cérebro, desde breves episódios de ausência até convulsões.',
+            en: 'Abnormal brain electrical activity, ranging from brief absence spells to convulsions.',
+            es: 'Actividad eléctrica anormal en el cerebro, desde breves episodios de ausencia hasta convulsiones.'
+          },
+          descSimple: {
+            pt: 'O cérebro tem uma espécie de "tempestade elétrica" que pode causar movimentos involuntários ou perda de consciência.',
+            en: 'The brain has a kind of "electrical storm" that can cause involuntary movements or loss of consciousness.',
+            es: 'El cerebro tiene una especie de "tormenta eléctrica" que puede causar movimientos involuntarios o pérdida de consciencia.'
+          },
+          whatIsIt: {
+            pt: 'Episódios de consciência alterada ou movimentos involuntários. Na NF1, podem estar relacionados com lesões cerebrais ou serem idiopáticos.',
+            en: 'Episodes of altered consciousness or involuntary movements. In NF1, they may be related to brain lesions or be idiopathic.',
+            es: 'Episodios de consciencia alterada o movimientos involuntarios. En NF1, pueden estar relacionados con lesiones cerebrales o ser idiopáticos.'
+          },
+          whatSimple: {
+            pt: 'O cérebro manda sinais errados que podem fazer o corpo tremer ou a pessoa ficar momentaneamente inconsciente.',
+            en: 'The brain sends wrong signals that can make the body shake or the person become briefly unconscious.',
+            es: 'El cerebro envía señales erróneas que pueden hacer que el cuerpo tiemble o la persona pierda el conocimiento brevemente.'
+          },
+          causes: {
+            pt: ['Podem estar associadas a lesões da NF1','Outras causas neurológicas'],
+            en: ['May be associated with NF1 lesions','Other neurological causes'],
+            es: ['Pueden estar asociadas a lesiones de NF1','Otras causas neurológicas']
+          },
+          causesSimple: {
+            pt: ['Às vezes relacionadas com o NF1, às vezes por outras razões'],
+            en: ['Sometimes related to NF1, sometimes for other reasons'],
+            es: ['A veces relacionadas con NF1, a veces por otras razones']
+          },
+          affects: {
+            pt: ['Segurança e atividades diárias','Condução de veículos (restrições legais)','Sono e bem-estar'],
+            en: ['Safety and daily activities','Driving (legal restrictions)','Sleep and wellbeing'],
+            es: ['Seguridad y actividades diarias','Conducción de vehículos (restricciones legales)','Sueño y bienestar']
+          },
+          affectsSimple: {
+            pt: ['Podem ser assustadoras','É importante que o médico saiba quando acontecem'],
+            en: ['Can be frightening','Important for the doctor to know when they happen'],
+            es: ['Pueden dar miedo','Es importante que el médico sepa cuándo ocurren']
+          },
+          management: {
+            pt: ['Seguimento em neurologia','Medicação antiepiléptica se indicada','EEG e ressonância magnética','Plano de segurança para a família'],
+            en: ['Neurology follow-up','Antiepileptic medication if indicated','EEG and MRI','Family safety plan'],
+            es: ['Seguimiento en neurología','Medicación antiepiléptica si está indicada','EEG y resonancia magnética','Plan de seguridad para la familia']
+          },
+          nextSteps: {
+            pt: ['Registar duração e tipo de cada episódio','Encaminhamento urgente para neurologia','Criar um plano de primeiros socorros com a família'],
+            en: ['Record the duration and type of each episode','Urgent referral to neurology','Create a first-aid plan with the family'],
+            es: ['Registrar duración y tipo de cada episodio','Derivación urgente a neurología','Crear un plan de primeros auxilios con la familia']
+          },
+          timeline: { onset: 'child', active: ['child','teen','adult'] },
+          sources: [
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' },
+            { label: 'Orphanet — NF1', url: 'https://www.orpha.net/en/disease/detail/636' }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'eye',
+      icon: '<ellipse cx="8" cy="8" rx="5.5" ry="4" stroke="currentColor" stroke-width="1.4" fill="none"/><circle cx="8" cy="8" r="2" stroke="currentColor" stroke-width="1.2" fill="none"/>',
+      color: 'var(--accent-bg)', iconColor: 'var(--accent)',
+      titles: { pt: 'Olhos e Visão', en: 'Eyes & Vision', es: 'Ojos y Visión' },
+      items: [
+        {
+          id: 'optic-gliomas',
+          names: { pt: 'Gliomas do nervo ótico', en: 'Optic gliomas', es: 'Gliomas del nervio óptico' },
+          namesSimple: { pt: 'Tumor no nervo do olho', en: 'Tumor on the eye nerve', es: 'Tumor en el nervio del ojo' },
+          prevalence: '15–20%', rateNum: 18,
+          desc: {
+            pt: 'Tumores benignos de crescimento lento no nervo ótico ou nas vias visuais. Na maioria dos casos não progressivos.',
+            en: 'Slow-growing benign tumors on the optic nerve or visual pathways. In most cases non-progressive.',
+            es: 'Tumores benignos de crecimiento lento en el nervio óptico o las vías visuales. En la mayoría de los casos no progresivos.'
+          },
+          descSimple: {
+            pt: 'Um tipo de tumor pequeno que pode crescer perto do nervo que liga o olho ao cérebro.',
+            en: 'A type of small tumor that can grow near the nerve connecting the eye to the brain.',
+            es: 'Un tipo de tumor pequeño que puede crecer cerca del nervio que conecta el ojo con el cerebro.'
+          },
+          whatIsIt: {
+            pt: 'Tumores de baixo grau (pilocítico astrocitoma grau 1 da OMS) ao longo da via ótica. Apenas cerca de 1/3 causam sintomas.',
+            en: 'Low-grade tumors (WHO grade 1 pilocytic astrocytoma) along the optic pathway. Only about 1/3 cause symptoms.',
+            es: 'Tumores de bajo grado (astrocitoma pilocítico grado 1 OMS) a lo largo de la vía óptica. Solo alrededor de 1/3 causan síntomas.'
+          },
+          whatSimple: {
+            pt: 'É um tumor pequeno e lento no nervo do olho. A maioria das vezes não causa problemas, mas o médico precisa de vigiar.',
+            en: 'A small, slow-growing tumor on the eye nerve. Most of the time it causes no problems, but the doctor needs to monitor it.',
+            es: 'Es un tumor pequeño y lento en el nervio del ojo. La mayoría de las veces no causa problemas, pero el médico necesita vigilarlo.'
+          },
+          causes: {
+            pt: ['Crescimento tumoral relacionado com a mutação NF1'],
+            en: ['Tumor growth related to NF1 mutation'],
+            es: ['Crecimiento tumoral relacionado con la mutación NF1']
+          },
+          causesSimple: {
+            pt: ['Causado pelo NF1'],
+            en: ['Caused by NF1'],
+            es: ['Causado por NF1']
+          },
+          affects: {
+            pt: ['Visão (redução da acuidade, campo visual)','Movimentos oculares','Puberdade precoce (se envolvimento hipotalâmico)'],
+            en: ['Vision (reduced acuity, visual field)','Eye movements','Early puberty (if hypothalamic involvement)'],
+            es: ['Visión (reducción de agudeza, campo visual)','Movimientos oculares','Pubertad precoz (si hay afectación hipotalámica)']
+          },
+          affectsSimple: {
+            pt: ['Pode dificultar a visão','Raramente causa outros problemas'],
+            en: ['Can make seeing harder','Rarely causes other problems'],
+            es: ['Puede dificultar la visión','Raramente causa otros problemas']
+          },
+          management: {
+            pt: ['Exames oftalmológicos regulares (6–12 meses)','Ressonância magnética de vigilância','Quimioterapia apenas se progressivo e sintomático','Sem cirurgia como primeira linha'],
+            en: ['Regular ophthalmology exams (every 6–12 months)','Monitoring MRI','Chemotherapy only if progressive and symptomatic','No surgery as first line'],
+            es: ['Exámenes oftalmológicos regulares (6–12 meses)','Resonancia magnética de vigilancia','Quimioterapia solo si progresivo y sintomático','Sin cirugía como primera línea']
+          },
+          nextSteps: {
+            pt: ['Marcar consulta de oftalmologia pediátrica','Perguntar ao médico sobre frequência de ressonâncias','Comunicar qualquer alteração visual rapidamente'],
+            en: ['Book a paediatric ophthalmology appointment','Ask your doctor about MRI frequency','Report any visual changes promptly'],
+            es: ['Pedir cita de oftalmología pediátrica','Preguntar al médico sobre frecuencia de resonancias','Comunicar cualquier cambio visual rápidamente']
+          },
+          timeline: { onset: 'child', active: ['child'] },
+          sources: [
+            { label: 'CTF — Optic Gliomas', url: 'https://www.ctf.org/understanding-nf/nf1/associated-conditions/optic-pathway-glioma/' },
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'lisch',
+          names: { pt: 'Nódulos de Lisch', en: 'Lisch nodules', es: 'Nódulos de Lisch' },
+          namesSimple: { pt: 'Manchas castanhas no olho', en: 'Brown spots in the eye', es: 'Manchas marrones en el ojo' },
+          prevalence: '90–95%', rateNum: 92,
+          desc: {
+            pt: 'Pequenas manchas castanhas benignas na íris, visíveis com lâmpada de fenda.',
+            en: 'Small, harmless brown spots on the iris, visible with a slit-lamp.',
+            es: 'Pequeñas manchas marrones benignas en el iris, visibles con lámpara de hendidura.'
+          },
+          descSimple: {
+            pt: 'Pequenas manchas na parte colorida do olho que só o médico consegue ver com um equipamento especial.',
+            en: 'Small spots on the colored part of the eye that only the doctor can see with special equipment.',
+            es: 'Pequeñas manchas en la parte de color del ojo que solo el médico puede ver con equipo especial.'
+          },
+          whatIsIt: {
+            pt: 'Hamartomas melanocíticos da íris. Não afetam a visão. Critério de diagnóstico da NF1.',
+            en: 'Melanocytic hamartomas of the iris. They do not affect vision. A diagnostic criterion for NF1.',
+            es: 'Hamartomas melanocíticos del iris. No afectan la visión. Criterio diagnóstico de NF1.'
+          },
+          whatSimple: {
+            pt: 'São manchas inofensivas no olho. Não prejudicam a visão e só servem para ajudar o médico a diagnosticar o NF1.',
+            en: 'Harmless spots in the eye. They do not affect vision and only help the doctor diagnose NF1.',
+            es: 'Son manchas inofensivas en el ojo. No afectan la visión y solo ayudan al médico a diagnosticar NF1.'
+          },
+          causes: {
+            pt: ['Alterações nas células pigmentares da íris'],
+            en: ['Changes in pigment cells of the iris'],
+            es: ['Cambios en las células pigmentarias del iris']
+          },
+          causesSimple: {
+            pt: ['Causadas pelo NF1'],
+            en: ['Caused by NF1'],
+            es: ['Causadas por NF1']
+          },
+          affects: {
+            pt: ['Nenhum efeito na visão'],
+            en: ['No effect on vision'],
+            es: ['Ningún efecto en la visión']
+          },
+          affectsSimple: {
+            pt: ['Não causam nenhum problema'],
+            en: ['Cause no problems at all'],
+            es: ['No causan ningún problema']
+          },
+          management: {
+            pt: ['Observação durante consultas de rotina','Úteis para confirmação diagnóstica'],
+            en: ['Observation during routine appointments','Useful for diagnostic confirmation'],
+            es: ['Observación en consultas rutinarias','Útiles para confirmación diagnóstica']
+          },
+          nextSteps: {
+            pt: ['Pedir ao oftalmologista para verificar com lâmpada de fenda'],
+            en: ['Ask the ophthalmologist to check with a slit-lamp'],
+            es: ['Pedir al oftalmólogo que los busque con lámpara de hendidura']
+          },
+          timeline: { onset: 'child', active: ['child','teen','adult'] },
+          sources: [
+            { label: 'Orphanet — NF1', url: 'https://www.orpha.net/en/disease/detail/636' }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'skeletal',
+      icon: '<path d="M8 2v12M5 5l3-3 3 3M5 11l3 3 3-3" stroke="currentColor" stroke-width="1.4" stroke-linecap="round" stroke-linejoin="round" fill="none"/>',
+      color: 'var(--emerald-bg)', iconColor: 'var(--emerald)',
+      titles: { pt: 'Esquelético e Crescimento', en: 'Skeletal & Growth', es: 'Esquelético y Crecimiento' },
+      items: [
+        {
+          id: 'short-stature',
+          names: { pt: 'Baixa estatura', en: 'Short stature', es: 'Talla baja' },
+          namesSimple: { pt: 'Crescer menos do que o esperado', en: 'Growing less than expected', es: 'Crecer menos de lo esperado' },
+          prevalence: '30–50%', rateNum: 40,
+          desc: {
+            pt: 'Altura abaixo da média para a idade, frequentemente evidente na infância.',
+            en: 'Below-average height for age, often apparent in childhood.',
+            es: 'Estatura inferior a la media para la edad, frecuentemente evidente en la infancia.'
+          },
+          descSimple: {
+            pt: 'A criança pode ser mais baixa do que os amigos da mesma idade.',
+            en: 'The child may be shorter than friends of the same age.',
+            es: 'El niño puede ser más bajo que sus amigos de la misma edad.'
+          },
+          whatIsIt: {
+            pt: 'Padrão de crescimento aquém do esperado, relacionado com mecanismos complexos de regulação do crescimento na NF1.',
+            en: 'Growth pattern below expectations, related to complex growth regulation mechanisms in NF1.',
+            es: 'Patrón de crecimiento por debajo de lo esperado, relacionado con mecanismos complejos de regulación del crecimiento en NF1.'
+          },
+          whatSimple: {
+            pt: 'O corpo pode não crescer tão rápido como o de outras crianças.',
+            en: 'The body may not grow as fast as other children.',
+            es: 'El cuerpo puede no crecer tan rápido como el de otros niños.'
+          },
+          causes: {
+            pt: ['Regulação complexa do crescimento na NF1','Possível disfunção do eixo hormona de crescimento–IGF-1'],
+            en: ['Complex growth regulation in NF1','Possible dysfunction of the growth hormone–IGF-1 axis'],
+            es: ['Regulación compleja del crecimiento en NF1','Posible disfunción del eje hormona de crecimiento–IGF-1']
+          },
+          causesSimple: {
+            pt: ['O NF1 pode interferir com as hormonas do crescimento'],
+            en: ['NF1 can interfere with growth hormones'],
+            es: ['El NF1 puede interferir con las hormonas del crecimiento']
+          },
+          affects: {
+            pt: ['Curvas de crescimento e expetativas','Autoestima na adolescência'],
+            en: ['Growth charts and expectations','Self-esteem in adolescence'],
+            es: ['Curvas de crecimiento y expectativas','Autoestima en la adolescencia']
+          },
+          affectsSimple: {
+            pt: ['A criança pode ser mais baixa do que os colegas'],
+            en: ['The child may be shorter than classmates'],
+            es: ['El niño puede ser más bajo que sus compañeros']
+          },
+          management: {
+            pt: ['Monitorização pediátrica regular','Endocrinologia se houver suspeita de défice hormonal','Avaliação da idade óssea se necessário'],
+            en: ['Regular paediatric monitoring','Endocrinology if hormonal deficiency is suspected','Bone age assessment if needed'],
+            es: ['Monitorización pediátrica regular','Endocrinología si se sospecha déficit hormonal','Evaluación de la edad ósea si es necesario']
+          },
+          nextSteps: {
+            pt: ['Registar altura regularmente no gráfico de crescimento','Pedir referenciação a endocrinologista se preocupado'],
+            en: ['Record height regularly on the growth chart','Request endocrinology referral if concerned'],
+            es: ['Registrar la altura regularmente en la gráfica de crecimiento','Solicitar derivación a endocrinología si hay preocupación']
+          },
+          timeline: { onset: 'child', active: ['child','teen'] },
+          sources: [
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+        {
+          id: 'scoliosis',
+          names: { pt: 'Escoliose', en: 'Scoliosis', es: 'Escoliosis' },
+          namesSimple: { pt: 'Curvatura da coluna', en: 'Curved spine', es: 'Curvatura de la columna' },
+          prevalence: '10–30%', rateNum: 20,
+          desc: {
+            pt: 'Curvatura anormal da coluna vertebral, que pode progredir.',
+            en: 'Abnormal curvature of the spine, which may progress.',
+            es: 'Curvatura anormal de la columna vertebral, que puede progresar.'
+          },
+          descSimple: {
+            pt: 'A coluna não cresce completamente direita — pode curvar-se para o lado.',
+            en: 'The spine does not grow completely straight — it may curve to one side.',
+            es: 'La columna no crece completamente recta — puede curvarse hacia un lado.'
+          },
+          whatIsIt: {
+            pt: 'Desvio lateral da coluna. Na NF1 pode ser distrófica (mais agressiva) ou não distrófica.',
+            en: 'Lateral deviation of the spine. In NF1, it can be dystrophic (more aggressive) or non-dystrophic.',
+            es: 'Desviación lateral de la columna. En NF1 puede ser distrófica (más agresiva) o no distrófica.'
+          },
+          whatSimple: {
+            pt: 'A coluna fica curvada. Na maioria dos casos não é grave, mas o médico precisa de a vigiar.',
+            en: 'The spine becomes curved. In most cases it is not serious, but the doctor needs to monitor it.',
+            es: 'La columna se curva. En la mayoría de los casos no es grave, pero el médico necesita vigilarla.'
+          },
+          causes: {
+            pt: ['Diferenças no desenvolvimento esquelético','Possível envolvimento de neurofibromas paravertebrais'],
+            en: ['Differences in skeletal development','Possible involvement of paravertebral neurofibromas'],
+            es: ['Diferencias en el desarrollo esquelético','Posible afectación de neurofibromas paravertebrales']
+          },
+          causesSimple: {
+            pt: ['O NF1 pode afetar a forma como os ossos da coluna crescem'],
+            en: ['NF1 can affect how the bones of the spine grow'],
+            es: ['El NF1 puede afectar cómo crecen los huesos de la columna']
+          },
+          affects: {
+            pt: ['Postura e aparência','Dor nas costas se grave','Raramente, função pulmonar'],
+            en: ['Posture and appearance','Back pain if severe','Rarely, lung function'],
+            es: ['Postura y apariencia','Dolor de espalda si es grave','Raramente, función pulmonar']
+          },
+          affectsSimple: {
+            pt: ['Pode causar dor nas costas','Pode afetar a postura'],
+            en: ['Can cause back pain','Can affect posture'],
+            es: ['Puede causar dolor de espalda','Puede afectar la postura']
+          },
+          management: {
+            pt: ['Avaliação ortopédica','Colete se necessário (curvas moderadas)','Cirurgia para curvas graves ou progressivas','Fisioterapia'],
+            en: ['Orthopaedic evaluation','Brace if needed (moderate curves)','Surgery for severe or progressive curves','Physiotherapy'],
+            es: ['Evaluación ortopédica','Corsé si es necesario (curvas moderadas)','Cirugía para curvas graves o progresivas','Fisioterapia']
+          },
+          nextSteps: {
+            pt: ['Pedir avaliação ortopédica','Raio-X da coluna se solicitado pelo médico','Fisioterapia preventiva'],
+            en: ['Request orthopaedic evaluation','Spinal X-ray if requested by the doctor','Preventive physiotherapy'],
+            es: ['Solicitar evaluación ortopédica','Radiografía de columna si lo indica el médico','Fisioterapia preventiva']
+          },
+          timeline: { onset: 'child', active: ['child','teen'] },
+          sources: [
+            { label: 'CTF — Skeletal Issues', url: 'https://www.ctf.org/understanding-nf/nf1/associated-conditions/bone-problems/' },
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' }
+          ]
+        },
+      ]
+    },
+    {
+      id: 'other',
+      icon: '<path d="M8 3v10M3 8h10" stroke="currentColor" stroke-width="1.5" stroke-linecap="round"/><circle cx="8" cy="8" r="6" stroke="currentColor" stroke-width="1.3" fill="none"/>',
+      color: 'var(--red-bg)', iconColor: 'var(--red)',
+      titles: { pt: 'Outras Manifestações', en: 'Other Manifestations', es: 'Otras Manifestaciones' },
+      items: [
+        {
+          id: 'hypertension',
+          names: { pt: 'Hipertensão arterial', en: 'High blood pressure', es: 'Hipertensión arterial' },
+          namesSimple: { pt: 'Pressão arterial elevada', en: 'High blood pressure', es: 'Presión arterial alta' },
+          prevalence: '10–15%', rateNum: 12,
+          desc: {
+            pt: 'Pressão arterial elevada que pode estar relacionada com anomalias renais ou vasculares.',
+            en: 'Elevated blood pressure that may be related to kidney or vascular abnormalities.',
+            es: 'Presión arterial elevada que puede estar relacionada con anomalías renales o vasculares.'
+          },
+          descSimple: {
+            pt: 'O coração tem de trabalhar mais do que o normal para bombar o sangue.',
+            en: 'The heart has to work harder than normal to pump blood.',
+            es: 'El corazón tiene que trabajar más de lo normal para bombear sangre.'
+          },
+          whatIsIt: {
+            pt: 'Hipertensão sistémica. Na NF1, pode dever-se a estenose da artéria renal ou, raramente, a feocromocitoma.',
+            en: 'Systemic hypertension. In NF1, may be due to renal artery stenosis or, rarely, phaeochromocytoma.',
+            es: 'Hipertensión sistémica. En NF1, puede deberse a estenosis de la arteria renal o, raramente, feocromocitoma.'
+          },
+          whatSimple: {
+            pt: 'A pressão do sangue nos vasos está mais alta do que devia. Isso pode ser cansativo para o coração.',
+            en: 'Blood pressure in the vessels is higher than it should be. This can be tiring for the heart.',
+            es: 'La presión de la sangre en los vasos es más alta de lo que debería. Eso puede ser agotador para el corazón.'
+          },
+          causes: {
+            pt: ['Estenose da artéria renal','Feocromocitoma (raro)','Causas essenciais'],
+            en: ['Renal artery stenosis','Phaeochromocytoma (rare)','Essential causes'],
+            es: ['Estenosis de la arteria renal','Feocromocitoma (raro)','Causas esenciales']
+          },
+          causesSimple: {
+            pt: ['Problemas nos vasos sanguíneos relacionados com o NF1'],
+            en: ['Blood vessel problems related to NF1'],
+            es: ['Problemas en los vasos sanguíneos relacionados con NF1']
+          },
+          affects: {
+            pt: ['Risco cardiovascular se não tratada','Rins e coração'],
+            en: ['Cardiovascular risk if untreated','Kidneys and heart'],
+            es: ['Riesgo cardiovascular si no se trata','Riñones y corazón']
+          },
+          affectsSimple: {
+            pt: ['Pode causar dores de cabeça ou cansaço','Precisa de tratamento'],
+            en: ['Can cause headaches or tiredness','Needs treatment'],
+            es: ['Puede causar dolores de cabeza o cansancio','Necesita tratamiento']
+          },
+          management: {
+            pt: ['Medição regular da pressão arterial','Tratar causas subjacentes','Medicação anti-hipertensiva se necessário'],
+            en: ['Regular blood pressure monitoring','Treat underlying causes','Antihypertensive medication if needed'],
+            es: ['Medición regular de la presión arterial','Tratar las causas subyacentes','Medicación antihipertensiva si es necesario']
+          },
+          nextSteps: {
+            pt: ['Medir a pressão arterial regularmente','Pedir análises renais e avaliação vascular se indicado'],
+            en: ['Monitor blood pressure regularly','Request kidney tests and vascular assessment if indicated'],
+            es: ['Medir la presión arterial regularmente','Solicitar análisis renales y evaluación vascular si está indicado']
+          },
+          timeline: { onset: 'adult', active: ['teen','adult'] },
+          sources: [
+            { label: 'NORD — NF1', url: 'https://www.nord.org/diseases/neurofibromatosis-type-1/' },
+            { label: 'Orphanet — NF1', url: 'https://www.orpha.net/en/disease/detail/636' }
+          ]
+        },
+      ]
+    }
+  ];
+
+  /* ════════════════════════════════════════
+     STATE
+  ════════════════════════════════════════ */
+  let lang = 'pt';
+  let simpleMode = false;
+  let mode = 'individual';
+  let selected = new Set();
+  let cards = [];
+  let activeIndex = 0;
+
+  /* ════════════════════════════════════════
+     i18n
+  ════════════════════════════════════════ */
+  function t(key) {
+    const v = LANGS[lang][key];
+    return v !== undefined ? v : key;
+  }
+
+  function applyTranslations() {
+    document.documentElement.lang = lang;
+    document.querySelectorAll('[data-i18n]').forEach(el => {
+      const key = el.dataset.i18n;
+      const val = LANGS[lang][key];
+      if (typeof val === 'string') el.textContent = val;
+    });
+    updateSelectedCount();
+    if (cards.length) renderResults();
+  }
+
+  function setLang(l) {
+    lang = l;
+    document.querySelectorAll('.lang-btn').forEach(btn => {
+      const isActive = btn.getAttribute('onclick').includes(`'${l}'`);
+      btn.classList.toggle('active', isActive);
+      btn.setAttribute('aria-pressed', String(isActive));
+    });
+    applyTranslations();
+    renderSymptoms();
+  }
+
+  /* ════════════════════════════════════════
+     SIMPLE MODE
+  ════════════════════════════════════════ */
+  function toggleSimple(on) {
+    simpleMode = on;
+    document.body.classList.toggle('simple', on);
+    if (cards.length) renderResults();
+  }
+
+  /* ════════════════════════════════════════
+     RENDER SYMPTOM LIST
+  ════════════════════════════════════════ */
+  function renderSymptoms() {
+    const elList = document.getElementById('symptomList');
+    elList.innerHTML = '';
+
+    CATEGORIES.forEach(cat => {
+      const section = document.createElement('section');
+      section.setAttribute('role', 'listitem');
+      section.className = 'cat-section';
+
+      const bgColor = cat.color;
+      const icColor = cat.iconColor;
+      section.innerHTML = `
+        <div class="cat-header" style="background:${bgColor}">
+          <div class="cat-icon" style="background:${icColor}20;">
+            <svg viewBox="0 0 16 16" fill="none" aria-hidden="true" style="color:${icColor}">
+              ${cat.icon}
+            </svg>
+          </div>
+          <h2 style="color:${icColor}">${cat.titles[lang]}</h2>
+        </div>`;
+
+      cat.items.forEach(item => {
+        const isOn = selected.has(item.id);
+        const row = document.createElement('div');
+        row.className = `symptom-row${isOn ? ' active' : ''}`;
+        row.setAttribute('role', 'listitem');
+
+        const name = simpleMode ? item.namesSimple[lang] : item.names[lang];
+        const desc = simpleMode ? item.descSimple[lang] : item.desc[lang];
+        const cbId = `cb-${item.id}`;
+
+        row.innerHTML = `
+          <div class="symptom-info">
+            <div class="symptom-name-row">
+              <span class="symptom-name">${name}</span>
+              <span class="prevalence-badge">${item.prevalence}</span>
+            </div>
+            <p class="symptom-desc">${desc}</p>
+          </div>
+          <div class="toggle-wrap">
+            <input type="checkbox" id="${cbId}"
+              aria-label="${name}"
+              ${isOn ? 'checked' : ''} />
+            <label class="toggle-track" for="${cbId}" aria-hidden="true"></label>
+          </div>`;
+
+        row.querySelector('input').addEventListener('change', e => {
+          const on = e.target.checked;
+          if (on) selected.add(item.id); else selected.delete(item.id);
+          row.classList.toggle('active', on);
+          updateSelectedCount();
+          document.getElementById('generateBtn').disabled = selected.size === 0;
         });
 
-        section.appendChild(ul);
-        elList.appendChild(section);
+        section.appendChild(row);
       });
 
-      updateSelectedCount();
-    }
-
-    function updateSelectedCount() {
-      const n = selected.size;
-      elCount.textContent = n ? `${n} symptom${n>1?'s':''} selected` : 'No symptoms selected';
-    }
-
-    function computeCards() {
-      const list = [];
-      CATEGORIES.forEach(cat => cat.items.forEach(it => { if (selected.has(it.id)) list.push({ ...it, category: cat.title }); }));
-      return list;
-    }
-
-    function setMode(newMode) {
-      mode = newMode;
-      tabIndividual.setAttribute('aria-selected', String(mode==='individual'));
-      tabOverview.setAttribute('aria-selected', String(mode==='overview'));
-      tabIndividual.className = `px-3 py-2 text-sm font-medium ${mode==='individual'?'bg-gray-900 text-white':'bg-white'}`;
-      tabOverview.className = `px-3 py-2 text-sm font-medium ${mode==='overview'?'bg-gray-900 text-white':'bg-white'}`;
-      renderResults();
-    }
-
-    function renderResults() {
-      if (!cards.length) {
-        elEmpty.classList.remove('hidden');
-        elSlider.classList.add('hidden');
-        elOverview.classList.add('hidden');
-        return;
-      }
-      elEmpty.classList.add('hidden');
-
-      if (mode === 'individual') {
-        elSlider.classList.remove('hidden');
-
-        elOverview.style.display = 'none';
-        elOverview.classList.add('hidden');
-        renderSlide();
-      } else {
-        elSlider.classList.add('hidden');
-        elOverview.classList.remove('hidden');
-        elOverview.style.display = 'grid';
-        renderOverview();
-      }
-    }
-
-    function renderSlide() {
-      const s = cards[activeIndex];
-      const src = s.sources || DEFAULT_SOURCES;
-      elPos.textContent = `${activeIndex + 1} of ${cards.length}`;
-      elSlideCard.innerHTML = `
-        <header class="mb-4">
-          <div class="text-indigo-700 text-sm font-medium inline-block bg-white/70 rounded px-2 py-0.5 border border-indigo-200">${s.category}</div>
-          <h3 class="mt-2 text-2xl font-bold text-indigo-900">${s.name}</h3>
-          <div class="mt-1 text-sm text-indigo-900/80">Prevalence in NF1: <strong>${s.prevalence}</strong></div>
-        </header>
-        <section class="grid md:grid-cols-2 gap-4">
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">What is it?</h4>
-            <p class="text-sm text-gray-700">${s.whatIsIt}</p>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">What causes it?</h4>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">${s.causes.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">How it affects me</h4>
-            <ul class="text-sm text-gray-700 list-disc pl-5 space-y-1">${s.affects.map(c=>`<li>${c}</li>`).join('')}</ul>
-          </div>
-          <div class="bg-white rounded-xl p-4 border">
-            <h4 class="font-semibold mb-2">Management & Support</h4>
-            <ul class="text-sm text-gray-700 grid grid-cols-1 sm:grid-cols-2 gap-2">${s.management.map(m=>`<li class='px-3 py-2 rounded-lg bg-emerald-50 border border-emerald-100 text-emerald-900'>${m}</li>`).join('')}</ul>
-          </div>
-        </section>
-        <section class="mt-4 bg-white rounded-xl p-4 border">
-          <h4 class="font-semibold mb-2">How common is this symptom?</h4>
-          <div class="flex items-center gap-3">
-            <div class="w-full h-3 bg-blue-100 rounded-full overflow-hidden">
-              <div class="h-3 bg-blue-600 rounded-full" style="width:${Math.max(0, Math.min(100, s.rateNum))}%"></div>
-            </div>
-            <div class="w-12 text-right font-semibold text-blue-700">${s.rateNum}%</div>
-          </div>
-        </section>
-        <section class="mt-4 bg-blue-50/60 rounded-xl p-4 border border-blue-200">
-          <div class="flex items-center gap-2 mb-2">
-            <span class="text-sm font-semibold text-blue-900">Sources — Children's Tumor Foundation</span>
-          </div>
-          <div class="grid sm:grid-cols-2 gap-2">
-            ${src.map(x=>`<a class='group flex items-center justify-between gap-3 px-3 py-2 rounded-lg border border-blue-200 bg-white text-blue-900 hover:bg-blue-50' href='${x.url}' target='_blank' rel='noopener noreferrer'>
-              <span class='font-medium truncate'>${x.label}</span>
-              <svg aria-hidden='true' viewBox='0 0 20 20' class='w-4 h-4 text-blue-600 group-hover:text-blue-700'><path fill='currentColor' d='M11 3h6v6h-2V6.41l-7.29 7.3-1.42-1.42L13.59 5H11V3z'/><path fill='currentColor' d='M5 5h4v2H7v8h8v-2h2v4H5z'/></svg>
-            </a>`).join('')}
-          </div>
-          <p class="mt-2 text-xs text-blue-900/80">This link opens in a new tab.</p>
-        </section>
-        `;
-    }
-
-    function renderOverview() {
-      elOverview.innerHTML = cards.map(s => `
-        <div class="bg-indigo-50 rounded-xl p-4 border border-indigo-100">
-          <div class="text-xs text-indigo-700 font-medium inline-block bg-white/70 rounded px-2 py-0.5 border border-indigo-200 mb-1">${s.category}</div>
-          <h4 class="font-semibold text-indigo-900">${s.name}</h4>
-          <p class="text-xs text-indigo-900/90">Prevalence: ${s.prevalence}</p>
-          <p class="text-sm text-gray-700 mt-2">${s.whatIsIt}</p>
-        </div>`).join('');
-    }
-
-
-    document.getElementById('btnPrev').addEventListener('click', () => {
-      activeIndex = (activeIndex - 1 + cards.length) % cards.length;
-      renderSlide();
+      elList.appendChild(section);
     });
-    document.getElementById('btnNext').addEventListener('click', () => {
-      activeIndex = (activeIndex + 1) % cards.length;
-      renderSlide();
+  }
+
+  /* ════════════════════════════════════════
+     SELECTED COUNT
+  ════════════════════════════════════════ */
+  function updateSelectedCount() {
+    const n = selected.size;
+    const el = document.getElementById('selectedCount');
+    if (n === 0) el.innerHTML = t('selected_none');
+    else if (n === 1) el.innerHTML = `<strong>${t('selected_one')}</strong>`;
+    else el.innerHTML = `<strong>${t('selected_many')(n)}</strong>`;
+  }
+
+  /* ════════════════════════════════════════
+     COMPUTE CARDS
+  ════════════════════════════════════════ */
+  function computeCards() {
+    const list = [];
+    CATEGORIES.forEach(cat => {
+      cat.items.forEach(it => {
+        if (selected.has(it.id)) list.push({ ...it, categoryTitle: cat.titles });
+      });
     });
+    return list;
+  }
 
-    elGenerate.addEventListener('click', () => {
-      if (!selected.size) {
-        elCount.textContent = 'Please select at least one symptom.';
-        elCount.classList.add('text-red-600');
-        setTimeout(() => elCount.classList.remove('text-red-600'), 2500);
-        return;
-      }
-      cards = computeCards();
-      activeIndex = 0;
-      setMode('individual');
-      document.getElementById('resultsPanel').scrollIntoView({ behavior: 'smooth' });
-    });
-
-    tabIndividual.addEventListener('click', () => setMode('individual'));
-    tabOverview.addEventListener('click', () => setMode('overview'));
-
-    document.getElementById('btnPrint').addEventListener('click', () => window.print());
-
-    renderSymptoms();
+  /* ════════════════════════════════════════
+     GENERATE
+  ════════════════════════════════════════ */
+  function generate() {
+    if (!selected.size) return;
+    cards = computeCards();
+    activeIndex = 0;
     setMode('individual');
+    document.getElementById('main-content').scrollIntoView({ behavior: 'smooth', block: 'start' });
+  }
+
+  /* ════════════════════════════════════════
+     SET MODE
+  ════════════════════════════════════════ */
+  function setMode(newMode) {
+    mode = newMode;
+    const ti = document.getElementById('tabIndividual');
+    const to = document.getElementById('tabOverview');
+    ti.setAttribute('aria-selected', String(mode === 'individual'));
+    to.setAttribute('aria-selected', String(mode === 'overview'));
+    renderResults();
+  }
+
+  /* ════════════════════════════════════════
+     RENDER RESULTS
+  ════════════════════════════════════════ */
+  function renderResults() {
+    const elEmpty   = document.getElementById('emptyState');
+    const elSlider  = document.getElementById('slider');
+    const elOverview = document.getElementById('overviewGrid');
+
+    if (!cards.length) {
+      elEmpty.classList.remove('hidden');
+      elSlider.classList.add('hidden');
+      elOverview.classList.add('hidden');
+      return;
+    }
+    elEmpty.classList.add('hidden');
+    if (mode === 'individual') {
+      elSlider.classList.remove('hidden');
+      elOverview.classList.add('hidden');
+      renderSlide();
+    } else {
+      elSlider.classList.add('hidden');
+      elOverview.classList.remove('hidden');
+      renderOverview();
+    }
+  }
+
+  /* ════════════════════════════════════════
+     RENDER SLIDE
+  ════════════════════════════════════════ */
+  function getName(s)    { return simpleMode ? s.namesSimple[lang]  : s.names[lang]; }
+  function getWhat(s)    { return simpleMode ? s.whatSimple[lang]   : s.whatIsIt[lang]; }
+  function getCauses(s)  { return simpleMode ? s.causesSimple[lang] : s.causes[lang]; }
+  function getAffects(s) { return simpleMode ? s.affectsSimple[lang]: s.affects[lang]; }
+
+  function renderSlide() {
+    const s = cards[activeIndex];
+    const src = s.sources || [];
+    const elPos = document.getElementById('slidePos');
+    elPos.textContent = `${activeIndex + 1} ${t('of')} ${cards.length}`;
+
+    const phases = ['birth','child','teen','adult'];
+    const timelineHTML = phases.map(ph => {
+      const phLabel = t('phase')[ph];
+      const isOnset  = s.timeline?.onset === ph ? 'onset'  : '';
+      const isActive = s.timeline?.active?.includes(ph) && !isOnset ? 'active' : '';
+      return `<div class="timeline-phase ${isOnset || isActive}" aria-label="${phLabel}${isOnset?' (início)':''}">
+        <span class="timeline-label">${phLabel}</span>
+      </div>`;
+    }).join('');
+
+    const sourcesHTML = src.map(x => `
+      <a class="source-link" href="${x.url}" target="_blank" rel="noopener noreferrer">
+        <span>${x.label}</span>
+        <svg viewBox="0 0 12 12" fill="none" aria-hidden="true">
+          <path d="M7 1h4v4M5 7l6-6M2 3h3M2 3v7h7V7" stroke="currentColor" stroke-width="1.3" stroke-linecap="round" stroke-linejoin="round"/>
+        </svg>
+      </a>`).join('');
+
+    const nextStepsHTML = (s.nextSteps?.[lang] || []).map(ns =>
+      `<li>${ns}</li>`
+    ).join('');
+
+    const mgmtHTML = s.management[lang].map(m => `<li>${m}</li>`).join('');
+    const causesHTML = getCauses(s).map(c => `<li>${c}</li>`).join('');
+    const affectsHTML = getAffects(s).map(a => `<li>${a}</li>`).join('');
+
+    document.getElementById('slideCard').innerHTML = `
+      <div class="slide-category">${s.categoryTitle[lang]}</div>
+      <h3 class="slide-title">${getName(s)}</h3>
+      <p class="slide-prevalence">${t('prevalence')}: <strong>${s.prevalence}</strong></p>
+
+      <div class="slide-grid">
+        <div class="info-card">
+          <h4>${t('what_is_it')}</h4>
+          <p class="clinical">${s.whatIsIt[lang]}</p>
+          <p class="simple-text">${s.whatSimple[lang]}</p>
+        </div>
+        <div class="info-card">
+          <h4>${t('causes')}</h4>
+          <ul class="clinical">${s.causes[lang].map(c=>`<li>${c}</li>`).join('')}</ul>
+          <ul class="simple-text">${s.causesSimple[lang].map(c=>`<li>${c}</li>`).join('')}</ul>
+        </div>
+        <div class="info-card">
+          <h4>${t('affects')}</h4>
+          <ul class="clinical">${s.affects[lang].map(a=>`<li>${a}</li>`).join('')}</ul>
+          <ul class="simple-text">${s.affectsSimple[lang].map(a=>`<li>${a}</li>`).join('')}</ul>
+        </div>
+        <div class="info-card">
+          <h4>${t('management')}</h4>
+          <ul class="mgmt-list">${mgmtHTML}</ul>
+        </div>
+      </div>
+
+      <div class="prev-section">
+        <h4>${t('how_common')}</h4>
+        <div class="prev-bar-wrap">
+          <div class="prev-bar-track" role="progressbar" aria-valuenow="${s.rateNum}" aria-valuemin="0" aria-valuemax="100" aria-label="${s.rateNum}%">
+            <div class="prev-bar-fill" style="width:${Math.max(0,Math.min(100,s.rateNum))}%"></div>
+          </div>
+          <span class="prev-pct">${s.rateNum}%</span>
+        </div>
+      </div>
+
+      <div class="timeline-section">
+        <h4>${t('timeline')}</h4>
+        <div class="timeline-track" role="img" aria-label="Linha do tempo de aparecimento">${timelineHTML}</div>
+      </div>
+
+      ${nextStepsHTML ? `
+      <div class="next-steps-section">
+        <h4>${t('next_steps')}</h4>
+        <ul class="next-steps-list">${nextStepsHTML}</ul>
+      </div>` : ''}
+
+      ${sourcesHTML ? `
+      <div class="sources-section">
+        <h4>${t('sources')}</h4>
+        <div class="sources-grid">${sourcesHTML}</div>
+        <p class="sources-note">${t('opens_new_tab')}</p>
+      </div>` : ''}
+    `;
+  }
+
+  /* ════════════════════════════════════════
+     RENDER OVERVIEW
+  ════════════════════════════════════════ */
+  function renderOverview() {
+    const el = document.getElementById('overviewGrid');
+    el.innerHTML = cards.map(s => `
+      <div class="overview-card">
+        <div class="overview-cat">${s.categoryTitle[lang]}</div>
+        <div class="overview-name">${getName(s)}</div>
+        <div class="overview-prev">${t('overview_prev')} ${s.prevalence}</div>
+        <div class="overview-desc">${simpleMode ? s.descSimple[lang] : s.desc[lang]}</div>
+      </div>`).join('');
+  }
+
+  /* ════════════════════════════════════════
+     NAVIGATION
+  ════════════════════════════════════════ */
+  function prevSlide() {
+    activeIndex = (activeIndex - 1 + cards.length) % cards.length;
+    renderSlide();
+  }
+  function nextSlide() {
+    activeIndex = (activeIndex + 1) % cards.length;
+    renderSlide();
+  }
+
+  /* Keyboard navigation on slider */
+  document.addEventListener('keydown', e => {
+    if (!document.getElementById('slider').classList.contains('hidden')) {
+      if (e.key === 'ArrowLeft')  { e.preventDefault(); prevSlide(); }
+      if (e.key === 'ArrowRight') { e.preventDefault(); nextSlide(); }
+    }
+  });
+
+  /* ════════════════════════════════════════
+     INIT
+  ════════════════════════════════════════ */
+  renderSymptoms();
+  applyTranslations();
+  updateSelectedCount();
+  renderResults();
   </script>
 </body>
 </html>
